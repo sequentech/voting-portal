@@ -21,7 +21,9 @@
     "react-scripts": "5.0.1",
     "sequent-core": "file:./rust/pkg/sequent-core-0.1.0.tgz",
     "ui-essentials": "file:./ui-essentials/dist",
-    "web-vitals": "^2.1.0"
+    "web-vitals": "^2.1.0",
+    "@reduxjs/toolkit": "1.9.5",
+    "react-redux": "8.1.2"
   },
   "scripts": {
     "start": "react-scripts start",
