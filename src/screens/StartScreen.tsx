@@ -3,4 +3,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 import React from "react"
 
-export const StartScreen: React.FC = () => <div>Hello world</div>
+export const StartScreen: React.FC = () => {
+    return <div>Hello world</div>
+}
