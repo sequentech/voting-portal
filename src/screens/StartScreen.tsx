@@ -2,12 +2,12 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 import React, { useEffect } from "react"
-import { fetchElectionByIdAsync, selectElectionId } from "../store/election/electionSlice"
+import { fetchElectionByIdAsync, selectElectionById } from "../store/elections/electionsSlice"
 import { useAppDispatch, useAppSelector } from "../store/hooks"
 import { Box } from "@mui/material";
 
 export const StartScreen: React.FC = () => {
-    const electionId = useAppSelector(selectElectionId);
+    const election = useAppSelector(selectElectionById(34570001));
     const dispatch = useAppDispatch()
 
     useEffect( () => {
@@ -16,8 +16,8 @@ export const StartScreen: React.FC = () => {
 
     return <Box>
         {
-            electionId
-            ? <p>Election Id: {electionId}</p>
+            election
+            ? <p>Election Id: {election.id}</p>
             : null
         }
     </Box>
