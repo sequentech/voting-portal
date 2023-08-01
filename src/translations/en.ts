@@ -8,6 +8,10 @@ const englishTranslation = {
             review: "Review",
             confirmation: "Confirmation",
         },
+        votingScreen: {
+            backButton: "Back",
+            reviewButton: "Next",
+        },
     },
 }
 

@@ -5,12 +5,20 @@ import React, { useEffect } from "react"
 import { fetchElectionByIdAsync, selectElectionById } from "../store/elections/electionsSlice"
 import { useAppDispatch, useAppSelector } from "../store/hooks"
 import { Box } from "@mui/material"
-import {PageLimit, BreadCrumbSteps, IconButton, theme, Candidate} from "ui-essentials"
+import {PageLimit, BreadCrumbSteps, Icon, IconButton, theme, Candidate} from "ui-essentials"
 import {styled} from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
-import {faCircleQuestion} from "@fortawesome/free-solid-svg-icons"
+import {faCircleQuestion, faAngleLeft, faAngleRight} from "@fortawesome/free-solid-svg-icons"
 import { IAnswer, IQuestion } from "sequent-core"
 import Image from "mui-image"
+import {useTranslation} from "react-i18next"
+import Button from "@mui/material/Button"
+import {Link as RouterLink} from "react-router-dom"
+
+const StyledLink = styled(RouterLink)`
+    margin: auto 0;
+    text-decoration: none;
+`
 
 const StyledTitle = styled(Typography)`
     margin-top: 25.5px;
@@ -26,6 +34,29 @@ const CandidatesWrapper = styled(Box)`
     margin: 12px 0;
 `
 
+const ActionsContainer = styled(Box)`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 20px;
+    margin-top: 10px;
+    gap: 2px;
+`
+
+const StyledButton = styled(Button)`
+    display flex;
+    padding: 5px;
+
+    span {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding: 5px;
+    }
+`
+
 interface IAnswerProps {
     answer: IAnswer
 }
@@ -34,7 +65,11 @@ const Answer: React.FC<IAnswerProps> = ({answer}) => {
 
     return <Candidate
         title={answer.text}
-        description={answer.details}
+        description={
+            <span
+                dangerouslySetInnerHTML={{__html: answer.details}}
+            />
+        }
         isActive={true}
     >
         {
@@ -76,6 +111,27 @@ const Question: React.FC<IQuestionProps> = ({question}) => {
         }
         </CandidatesWrapper>
     </Box>
+}
+
+interface ActionButtonProps {}
+
+const ActionButtons: React.FC<ActionButtonProps> = ({}) => {
+    const {t} = useTranslation()
+
+    return (
+        <ActionsContainer>
+            <StyledLink to="/" sx={{margin: "auto 0", width: {xs: "100%", sm: "200px"}}}>
+                <StyledButton sx={{width: {xs: "100%", sm: "200px"}}}>
+                    <Icon icon={faAngleLeft} size="sm" />
+                    <span>{t("votingScreen.backButton")}</span>
+                </StyledButton>
+            </StyledLink>
+            <StyledButton sx={{width: {xs: "100%", sm: "200px"}}}>
+                <span>{t("votingScreen.reviewButton")}</span>
+                <Icon icon={faAngleRight} size="sm" />
+            </StyledButton>
+        </ActionsContainer>
+    )
 }
 
 export const StartScreen: React.FC = () => {
@@ -123,5 +179,6 @@ export const StartScreen: React.FC = () => {
                 <Question question={question} key={index}/>
             )
         }
+        <ActionButtons />
     </PageLimit>
 }
