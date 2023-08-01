@@ -3,12 +3,14 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 import {configureStore, ThunkAction, Action} from "@reduxjs/toolkit"
 import electionsReducer from "./elections/electionsSlice"
+import ballotSelectionsReducer from "./ballotSelections/ballotSelectionsSlice"
 
 // note: use Immer, https://immerjs.github.io/immer/
 
 export const store = configureStore({
     reducer: {
         elections: electionsReducer,
+        ballotSelections: ballotSelectionsReducer,
     },
 })
 
