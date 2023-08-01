@@ -73,6 +73,8 @@ const BallotIdLink = styled(Link)`
     color: ${({theme}) => theme.palette.brandColor};
     text-decoration: none;
     font-weight: normal;
+    overflow-wrap: anywhere;
+    text-overflow: ellipsis;
     &:hover {
         text-decoration: underline;
     }
@@ -160,7 +162,12 @@ export const ConfirmationScreen: React.FC = () => {
                 {stringToHtml(t("confirmationScreen.description"))}
             </Typography>
             <BallotIdContainer>
-                <Typography variant="h5" fontSize="18px" fontWeight="bold">
+                <Typography
+                    variant="h5"
+                    fontSize="18px"
+                    fontWeight="bold"
+                    sx={{display: {xs: "none", sm: "block"}}}
+                >
                     {t("confirmationScreen.ballotId")}
                 </Typography>
                 <BallotIdBorder>
@@ -170,8 +177,19 @@ export const ConfirmationScreen: React.FC = () => {
                         fontSize="14px"
                         color={theme.palette.customGrey.contrastText}
                     />
-                    <BallotIdLink href={ballotTrackerUrl} target="_blank">
+                    <BallotIdLink
+                        href={ballotTrackerUrl}
+                        target="_blank"
+                        sx={{display: {xs: "none", sm: "block"}}}
+                    >
                         {ballotId}
+                    </BallotIdLink>
+                    <BallotIdLink
+                        href={ballotTrackerUrl}
+                        target="_blank"
+                        sx={{display: {xs: "block", sm: "none"}}}
+                    >
+                        {t("ballotHash", {ballotId: ballotId})}
                     </BallotIdLink>
                     <IconButton
                         icon={faCircleQuestion}
