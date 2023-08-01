@@ -28,11 +28,6 @@ const StyledTitle = styled(Typography)`
     gap: 16px;
 `
 
-const StyledLink = styled(RouterLink)`
-    margin: auto 0;
-    text-decoration: none;
-`
-
 const StyledButton = styled(Button)`
     display flex;
     padding: 5px;
@@ -90,22 +85,35 @@ const QRContainer = styled(Box)`
     margin: 15px auto;
 `
 
+const ActionLink = styled(Link)`ç
+    text-decoration: none;
+    &:hover {
+        text-decoration: none;
+    }
+`
+
 const ActionButtons: React.FC = ({}) => {
     const {t} = useTranslation()
+    const triggerPrint = () => window.print()
 
     return (
         <ActionsContainer>
-            <StyledLink to="/" sx={{margin: "auto 0", width: {xs: "100%", sm: "200px"}}}>
-                <StyledButton variant="secondary" sx={{width: {xs: "100%", sm: "200px"}}}>
-                    <Icon icon={faPrint} size="sm" />
-                    <Box>{t("confirmationScreen.printButton")}</Box>
-                </StyledButton>
-            </StyledLink>
-            <StyledLink to="/" sx={{margin: "auto 0", width: {xs: "100%", sm: "200px"}}}>
+            <StyledButton
+                onClick={triggerPrint}
+                variant="secondary"
+                sx={{margin: "auto 0", width: {xs: "100%", sm: "200px"}}}
+            >
+                <Icon icon={faPrint} size="sm" />
+                <Box>{t("confirmationScreen.printButton")}</Box>
+            </StyledButton>
+            <ActionLink
+                href="https://sequentech.io"
+                sx={{margin: "auto 0", width: {xs: "100%", sm: "200px"}}}
+            >
                 <StyledButton sx={{width: {xs: "100%", sm: "200px"}}}>
                     <Box>{t("confirmationScreen.finishButton")}</Box>
                 </StyledButton>
-            </StyledLink>
+            </ActionLink>
         </ActionsContainer>
     )
 }
