@@ -4,12 +4,21 @@
 import {Box, Typography} from "@mui/material"
 import React from "react"
 import {useTranslation} from "react-i18next"
-import {PageLimit, BreadCrumbSteps, Icon, IconButton, stringToHtml, theme} from "ui-essentials"
+import {
+    PageLimit,
+    BreadCrumbSteps,
+    Icon,
+    IconButton,
+    stringToHtml,
+    theme,
+    QRCode,
+} from "ui-essentials"
 import {styled} from "@mui/material/styles"
 import {faPrint, faCircleQuestion, faCheck} from "@fortawesome/free-solid-svg-icons"
 import Button from "@mui/material/Button"
 import {Link as RouterLink} from "react-router-dom"
 import Link from "@mui/material/Link"
+import {SIMPLE_ELECTION} from "../fixtures/election"
 
 const StyledTitle = styled(Typography)`
     margin-top: 25.5px;
@@ -64,13 +73,20 @@ const BallotIdBorder = styled(Box)`
     border-radius: 4px;
 `
 
-const StyledBallotId = styled(Link)`
+const BallotIdLink = styled(Link)`
     color: ${({theme}) => theme.palette.brandColor};
     text-decoration: none;
     font-weight: normal;
     &:hover {
         text-decoration: underline;
     }
+`
+
+const QRContainer = styled(Box)`
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 15px auto;
 `
 
 const ActionButtons: React.FC = ({}) => {
@@ -84,7 +100,7 @@ const ActionButtons: React.FC = ({}) => {
                     <Box>{t("confirmationScreen.printButton")}</Box>
                 </StyledButton>
             </StyledLink>
-            <StyledLink to="/review" sx={{margin: "auto 0", width: {xs: "100%", sm: "200px"}}}>
+            <StyledLink to="/" sx={{margin: "auto 0", width: {xs: "100%", sm: "200px"}}}>
                 <StyledButton sx={{width: {xs: "100%", sm: "200px"}}}>
                     <Box>{t("confirmationScreen.finishButton")}</Box>
                 </StyledButton>
@@ -96,30 +112,33 @@ const ActionButtons: React.FC = ({}) => {
 export const ConfirmationScreen: React.FC = () => {
     const {t} = useTranslation()
     const ballotId = "eee6fe54bc8a5f3fce2d2b8aa1909259ceaf7df3266302b7ce1a65ad85a53a92"
+    const electionId = SIMPLE_ELECTION.id
+    const ballotTrackerUrl = `${window.location.protocol}//${window.location.host}/election/${electionId}/public/ballot-locator/${ballotId}`
 
-    return <PageLimit maxWidth="lg">
-        <Box marginTop="24px">
-            <BreadCrumbSteps
-                labels={[
-                    "breadcrumbSteps.ballot",
-                    "breadcrumbSteps.review",
-                    "breadcrumbSteps.confirmation",
-                ]}
-                selected={2}
-            />
-        </Box>
-        <StyledTitle variant="h4" fontSize="24px" fontWeight="bold" sx={{marginTop: "40px"}}>
-            <Box>{t("confirmationScreen.title")}</Box>
-            <IconButton
-                icon={faCircleQuestion}
-                sx={{fontSize: "unset", lineHeight: "unset", paddingBottom: "2px"}}
-                fontSize="16px"
-            />
-        </StyledTitle>
-        <Typography variant="body2" sx={{color: theme.palette.customGrey.main}}>
-            {stringToHtml(t("confirmationScreen.description"))}
-        </Typography>
-        <BallotIdContainer>
+    return (
+        <PageLimit maxWidth="lg">
+            <Box marginTop="24px">
+                <BreadCrumbSteps
+                    labels={[
+                        "breadcrumbSteps.ballot",
+                        "breadcrumbSteps.review",
+                        "breadcrumbSteps.confirmation",
+                    ]}
+                    selected={2}
+                />
+            </Box>
+            <StyledTitle variant="h4" fontSize="24px" fontWeight="bold" sx={{marginTop: "40px"}}>
+                <Box>{t("confirmationScreen.title")}</Box>
+                <IconButton
+                    icon={faCircleQuestion}
+                    sx={{fontSize: "unset", lineHeight: "unset", paddingBottom: "2px"}}
+                    fontSize="16px"
+                />
+            </StyledTitle>
+            <Typography variant="body2" sx={{color: theme.palette.customGrey.main}}>
+                {stringToHtml(t("confirmationScreen.description"))}
+            </Typography>
+            <BallotIdContainer>
                 <Typography variant="h5" fontSize="18px" fontWeight="bold">
                     {t("confirmationScreen.ballotId")}
                 </Typography>
@@ -130,20 +149,31 @@ export const ConfirmationScreen: React.FC = () => {
                         fontSize="14px"
                         color={theme.palette.customGrey.contrastText}
                     />
-                    <StyledBallotId>{ballotId}</StyledBallotId>
+                    <BallotIdLink href={ballotTrackerUrl} target="_blank">
+                        {ballotId}
+                    </BallotIdLink>
                     <IconButton
                         icon={faCircleQuestion}
-                        sx={{fontSize: "unset", lineHeight: "unset", paddingBottom: "2px", marginLeft: "16px"}}
+                        sx={{
+                            fontSize: "unset",
+                            lineHeight: "unset",
+                            paddingBottom: "2px",
+                            marginLeft: "16px",
+                        }}
                         fontSize="18px"
                     />
                 </BallotIdBorder>
-        </BallotIdContainer>
-        <Typography variant="h5" fontSize="18px" fontWeight="bold">
-            {t("confirmationScreen.verifyCastTitle")}
-        </Typography>
-        <Typography variant="body2" sx={{color: theme.palette.customGrey.main}}>
-            {stringToHtml(t("confirmationScreen.verifyCastDescription"))}
-        </Typography>
-        <ActionButtons />
-    </PageLimit>
+            </BallotIdContainer>
+            <Typography variant="h5" fontSize="18px" fontWeight="bold">
+                {t("confirmationScreen.verifyCastTitle")}
+            </Typography>
+            <Typography variant="body2" sx={{color: theme.palette.customGrey.main}}>
+                {stringToHtml(t("confirmationScreen.verifyCastDescription"))}
+            </Typography>
+            <QRContainer>
+                <QRCode value={ballotTrackerUrl} />
+            </QRContainer>
+            <ActionButtons />
+        </PageLimit>
+    )
 }

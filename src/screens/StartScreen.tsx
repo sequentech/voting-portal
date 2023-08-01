@@ -53,9 +53,7 @@ const ActionButtons: React.FC = ({}) => {
     return (
         <ActionsContainer>
             <StyledLink to="/vote" sx={{margin: "auto 0", width: "100%"}}>
-                <StyledButton sx={{width: "100%"}}>
-                    {t("startScreen.startButton")}
-                </StyledButton>
+                <StyledButton sx={{width: "100%"}}>{t("startScreen.startButton")}</StyledButton>
             </StyledLink>
         </ActionsContainer>
     )

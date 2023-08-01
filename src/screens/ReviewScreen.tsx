@@ -134,34 +134,49 @@ interface ActionButtonProps {}
 const ActionButtons: React.FC<ActionButtonProps> = ({}) => {
     const {t} = useTranslation()
 
-    return (<Box sx={{ marginBottom: "10px", marginTop: "10px"}}>
-        <StyledLink to="/audit" sx={{display: {xs: "block", sm: "none"}, marginBottom: "2px", width: "100%"}}>
-            <StyledButton sx={{width: "100%"}} variant="warning">
-                <Icon icon={faFire} size="sm" />
-                <Box>{t("reviewScreen.auditButton")}</Box>
-            </StyledButton>
-        </StyledLink>
-        <ActionsContainer>
-            <StyledLink to="/vote" sx={{margin: "auto 0", width: {xs: "100%", sm: "200px"}}}>
-                <StyledButton sx={{width: {xs: "100%", sm: "200px"}}}>
-                    <Icon icon={faAngleLeft} size="sm" />
-                    <Box>{t("reviewScreen.backButton")}</Box>
-                </StyledButton>
-            </StyledLink>
-            <StyledLink to="/audit" sx={{display: {xs: "none", sm: "block"}, margin: "auto 0", width: {xs: "100%", sm: "200px"}}}>
-                <StyledButton sx={{width: {xs: "100%", sm: "200px"}}} variant="warning">
+    return (
+        <Box sx={{marginBottom: "10px", marginTop: "10px"}}>
+            <StyledLink
+                to="/audit"
+                sx={{display: {xs: "block", sm: "none"}, marginBottom: "2px", width: "100%"}}
+            >
+                <StyledButton sx={{width: "100%"}} variant="warning">
                     <Icon icon={faFire} size="sm" />
                     <Box>{t("reviewScreen.auditButton")}</Box>
                 </StyledButton>
             </StyledLink>
-            <StyledLink to="/confirmation" sx={{margin: "auto 0", width: {xs: "100%", sm: "200px"}}}>
-                <StyledButton sx={{width: {xs: "100%", sm: "200px"}}}>
-                    <Box>{t("reviewScreen.castBallotButton")}</Box>
-                    <Icon icon={faAngleRight} size="sm" />
-                </StyledButton>
-            </StyledLink>
-        </ActionsContainer>
-    </Box>)
+            <ActionsContainer>
+                <StyledLink to="/vote" sx={{margin: "auto 0", width: {xs: "100%", sm: "200px"}}}>
+                    <StyledButton sx={{width: {xs: "100%", sm: "200px"}}}>
+                        <Icon icon={faAngleLeft} size="sm" />
+                        <Box>{t("reviewScreen.backButton")}</Box>
+                    </StyledButton>
+                </StyledLink>
+                <StyledLink
+                    to="/audit"
+                    sx={{
+                        display: {xs: "none", sm: "block"},
+                        margin: "auto 0",
+                        width: {xs: "100%", sm: "200px"},
+                    }}
+                >
+                    <StyledButton sx={{width: {xs: "100%", sm: "200px"}}} variant="warning">
+                        <Icon icon={faFire} size="sm" />
+                        <Box>{t("reviewScreen.auditButton")}</Box>
+                    </StyledButton>
+                </StyledLink>
+                <StyledLink
+                    to="/confirmation"
+                    sx={{margin: "auto 0", width: {xs: "100%", sm: "200px"}}}
+                >
+                    <StyledButton sx={{width: {xs: "100%", sm: "200px"}}}>
+                        <Box>{t("reviewScreen.castBallotButton")}</Box>
+                        <Icon icon={faAngleRight} size="sm" />
+                    </StyledButton>
+                </StyledLink>
+            </ActionsContainer>
+        </Box>
+    )
 }
 
 export const ReviewScreen: React.FC = () => {
@@ -180,7 +195,10 @@ export const ReviewScreen: React.FC = () => {
 
     return (
         <PageLimit maxWidth="lg">
-            <BallotHash hash="eee6fe54bc8a5f3fce2d2b8aa1909259ceaf7df3266302b7ce1a65ad85a53a92" onHelpClick={() => setOpenBallotIdHelp(true)}/>
+            <BallotHash
+                hash="eee6fe54bc8a5f3fce2d2b8aa1909259ceaf7df3266302b7ce1a65ad85a53a92"
+                onHelpClick={() => setOpenBallotIdHelp(true)}
+            />
             <Dialog
                 handleClose={() => setOpenBallotIdHelp(false)}
                 open={openBallotIdHelp}

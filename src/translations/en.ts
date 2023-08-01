@@ -35,7 +35,8 @@ const englishTranslation = {
             auditButton: "Audit ballot",
             ballotIdHelpDialog: {
                 title: "Vote has not been cast",
-                content: "<p>This is your Ballot Tracker ID, but <b>your vote has not been cast yet</b>. If you try to track the ballot, you will not find it.</p><p>The reason we show the Ballot Tracker ID at this stage is to allow you to audit the correctness of the encrypted ballot before casting it.</p>",
+                content:
+                    "<p>This is your Ballot Tracker ID, but <b>your vote has not been cast yet</b>. If you try to track the ballot, you will not find it.</p><p>The reason we show the Ballot Tracker ID at this stage is to allow you to audit the correctness of the encrypted ballot before casting it.</p>",
                 ok: "I accept my vote has NOT been cast",
                 cancel: "Cancel",
             },
@@ -48,7 +49,8 @@ const englishTranslation = {
             printButton: "Print",
             finishButton: "Finish",
             verifyCastTitle: "Verify that your ballot has been cast",
-            verifyCastDescription: "You can verify your ballot has been cast correctly at any moment using the following QR code:",
+            verifyCastDescription:
+                "You can verify your ballot has been cast correctly at any moment using the following QR code:",
         },
     },
 }
