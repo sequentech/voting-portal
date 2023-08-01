@@ -1,17 +1,16 @@
 // SPDX-FileCopyrightText: 2023 Félix Robles <felix@sequentech.io>
 //
 // SPDX-License-Identifier: AGPL-3.0-only
-import { Box, Typography } from "@mui/material"
-import React, { useEffect } from "react"
-import { useTranslation } from "react-i18next"
-import { BreadCrumbSteps, PageLimit, theme } from "ui-essentials"
+import {Box, Typography} from "@mui/material"
+import React, {useEffect} from "react"
+import {useTranslation} from "react-i18next"
+import {BreadCrumbSteps, PageLimit, theme, stringToHtml} from "ui-essentials"
 import {styled} from "@mui/material/styles"
 import {Link as RouterLink} from "react-router-dom"
 import Button from "@mui/material/Button"
-import { useAppDispatch, useAppSelector } from "../store/hooks"
-import { fetchElectionByIdAsync, selectElectionById } from "../store/elections/electionsSlice"
-import { stringToHtml } from "../services/stringToHtml"
-import { SIMPLE_ELECTION } from "../fixtures/election"
+import {useAppDispatch, useAppSelector} from "../store/hooks"
+import {fetchElectionByIdAsync, selectElectionById} from "../store/elections/electionsSlice"
+import {SIMPLE_ELECTION} from "../fixtures/election"
 
 const StyledTitle = styled(Typography)`
     margin-top: 25.5px;
@@ -64,10 +63,10 @@ const ActionButtons: React.FC = ({}) => {
 
 export const StartScreen: React.FC = () => {
     const {t} = useTranslation()
-    const election = useAppSelector(selectElectionById(SIMPLE_ELECTION.id));
+    const election = useAppSelector(selectElectionById(SIMPLE_ELECTION.id))
     const dispatch = useAppDispatch()
 
-    useEffect( () => {
+    useEffect(() => {
         dispatch(fetchElectionByIdAsync(SIMPLE_ELECTION.id))
     }, [])
 
@@ -75,61 +74,55 @@ export const StartScreen: React.FC = () => {
         return <Box>Loading</Box>
     }
 
-    return <PageLimit maxWidth="md">
-        <Box marginTop="48px">
-            <BreadCrumbSteps
-                labels={[
-                    "breadcrumbSteps.ballot",
-                    "breadcrumbSteps.review",
-                    "breadcrumbSteps.confirmation",
-                ]}
-                selected={0}
-            />
-        </Box>
-        <StyledTitle variant="h3" justifyContent="center" fontWeight="bold">
-            <span>{election.configuration.title}</span>
-        </StyledTitle>
-        {
-            election.configuration.description
-            ? <Typography
-                variant="body2"
-                sx={{color: theme.palette.customGrey.main}}>
-                {stringToHtml(election.configuration.description)}
-            </Typography>
-            : null
-        }
-        <Typography variant="h5">
-            {t("startScreen.instructionsTitle")}
-        </Typography>
-        <Typography variant="body2">
-            {t("startScreen.instructionsDescription")}
-        </Typography>
-        <Box sx={{display: "flex", flexDirection: {sm: "column", md: "row"}, gap: {sm: 0, md: "15px"}}}>
-            <Box>
-                <Typography variant="h5" sx={{color: theme.palette.brandColor}}>
-                    {t("startScreen.step1Title")}
-                </Typography>
-                <Typography variant="body2">
-                    {t("startScreen.step1Description")}
-                </Typography>
+    return (
+        <PageLimit maxWidth="md">
+            <Box marginTop="48px">
+                <BreadCrumbSteps
+                    labels={[
+                        "breadcrumbSteps.ballot",
+                        "breadcrumbSteps.review",
+                        "breadcrumbSteps.confirmation",
+                    ]}
+                    selected={0}
+                />
             </Box>
-            <Box>
-                <Typography variant="h5" sx={{color: theme.palette.brandColor}}>
-                    {t("startScreen.step2Title")}
+            <StyledTitle variant="h3" justifyContent="center" fontWeight="bold">
+                <span>{election.configuration.title}</span>
+            </StyledTitle>
+            {election.configuration.description ? (
+                <Typography variant="body2" sx={{color: theme.palette.customGrey.main}}>
+                    {stringToHtml(election.configuration.description)}
                 </Typography>
-                <Typography variant="body2">
-                    {t("startScreen.step2Description")}
-                </Typography>
+            ) : null}
+            <Typography variant="h5">{t("startScreen.instructionsTitle")}</Typography>
+            <Typography variant="body2">{t("startScreen.instructionsDescription")}</Typography>
+            <Box
+                sx={{
+                    display: "flex",
+                    flexDirection: {sm: "column", md: "row"},
+                    gap: {sm: 0, md: "15px"},
+                }}
+            >
+                <Box>
+                    <Typography variant="h5" sx={{color: theme.palette.brandColor}}>
+                        {t("startScreen.step1Title")}
+                    </Typography>
+                    <Typography variant="body2">{t("startScreen.step1Description")}</Typography>
+                </Box>
+                <Box>
+                    <Typography variant="h5" sx={{color: theme.palette.brandColor}}>
+                        {t("startScreen.step2Title")}
+                    </Typography>
+                    <Typography variant="body2">{t("startScreen.step2Description")}</Typography>
+                </Box>
+                <Box>
+                    <Typography variant="h5" sx={{color: theme.palette.brandColor}}>
+                        {t("startScreen.step3Title")}
+                    </Typography>
+                    <Typography variant="body2">{t("startScreen.step3Description")}</Typography>
+                </Box>
             </Box>
-            <Box>
-                <Typography variant="h5" sx={{color: theme.palette.brandColor}}>
-                    {t("startScreen.step3Title")}
-                </Typography>
-                <Typography variant="body2">
-                    {t("startScreen.step3Description")}
-                </Typography>
-            </Box>
-        </Box>
-        <ActionButtons />
-    </PageLimit>
+            <ActionButtons />
+        </PageLimit>
+    )
 }

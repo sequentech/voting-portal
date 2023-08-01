@@ -4,7 +4,7 @@
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit"
 import {RootState, AppThunk} from "../store"
 import {fetchElection} from "./electionsAPI"
-import { IElectionDTO } from "sequent-core"
+import {IElectionDTO} from "sequent-core"
 
 export interface ElectionsState {
     [id: number]: IElectionDTO | undefined
@@ -32,18 +32,18 @@ export const electionsSlice = createSlice({
         },
     },
     extraReducers: (builder) => {
-        builder
-          .addCase(fetchElectionByIdAsync.fulfilled, (state, action) => {
+        builder.addCase(fetchElectionByIdAsync.fulfilled, (state, action) => {
             if (action.payload) {
                 state[action.payload.id] = action.payload
             }
             return state
-          })
-      },
+        })
+    },
 })
 
 export const {setElection} = electionsSlice.actions
 
-export const selectElectionById = (electionId: number) => (state: RootState) => state.elections[electionId]
+export const selectElectionById = (electionId: number) => (state: RootState) =>
+    state.elections[electionId]
 
 export default electionsSlice.reducer

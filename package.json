@@ -23,9 +23,7 @@
     "ui-essentials": "file:./ui-essentials/dist",
     "web-vitals": "^2.1.0",
     "@reduxjs/toolkit": "1.9.5",
-    "react-redux": "8.1.2",
-    "sanitize-html": "2.11.0",
-    "html-react-parser": "4.2.0"
+    "react-redux": "8.1.2"
   },
   "scripts": {
     "start": "react-scripts start",
