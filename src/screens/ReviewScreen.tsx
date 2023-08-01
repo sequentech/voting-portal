@@ -16,6 +16,7 @@ import Button from "@mui/material/Button"
 import {Link as RouterLink} from "react-router-dom"
 import { stringToHtml } from "../services/stringToHtml"
 import { BallotHash } from "../components/BallotHash"
+import { selectBallotSelectionByQuestionAnswer } from "../store/ballotSelections/ballotSelectionsSlice"
 
 const StyledLink = styled(RouterLink)`
     margin: auto 0;
@@ -61,11 +62,17 @@ const StyledButton = styled(Button)`
 
 interface IAnswerProps {
     answer: IAnswer
+    questionIndex: number
+    answerIndex: number
 }
-const Answer: React.FC<IAnswerProps> = ({answer}) => {
-    const [checked, setChecked] = useState(false)
+const Answer: React.FC<IAnswerProps> = ({answer, questionIndex, answerIndex}) => {
+    const selectionState = useAppSelector(selectBallotSelectionByQuestionAnswer(34570001, questionIndex, answerIndex))
     const imageUrl = answer.urls.find((url) => "Image URL" === url.title)?.url
     const infoUrl = answer.urls.find((url) => "URL" === url.title)?.url
+
+    if (typeof selectionState !== "number" || selectionState < 0) {
+        return null
+    }
 
     return <Candidate
         title={answer.text}
@@ -73,8 +80,6 @@ const Answer: React.FC<IAnswerProps> = ({answer}) => {
             stringToHtml(answer.details)
         }
         isActive={false}
-        checked={checked}
-        setChecked={setChecked}
         url={infoUrl}
     >
         {
@@ -87,13 +92,13 @@ const Answer: React.FC<IAnswerProps> = ({answer}) => {
 
 interface IQuestionProps {
     question: IQuestion
-    index: number
+    questionIndex: number
 }
 
-const Question: React.FC<IQuestionProps> = ({question, index}) => {
+const Question: React.FC<IQuestionProps> = ({question, questionIndex}) => {
     return <Box>
         <StyledTitle variant="h5">
-            <span>{String(index+1) + ". " + question.title}</span>
+            <span>{String(questionIndex+1) + ". " + question.title}</span>
             <IconButton
                 icon={faCircleQuestion}
                 sx={{fontSize: "unset", lineHeight: "unset", paddingBottom: "2px"}}
@@ -101,7 +106,17 @@ const Question: React.FC<IQuestionProps> = ({question, index}) => {
             />
         </StyledTitle>
         <CandidatesWrapper>
-        <Answer answer={question.answers[0]}/>
+        {
+            question.answers.map((answer, answerIndex) =>
+                <Answer
+                    key={answerIndex}
+                    questionIndex={questionIndex}
+                    answerIndex={answerIndex}
+                    answer={answer}
+                />
+            )
+        }
+        
         </CandidatesWrapper>
     </Box>
 }
@@ -175,7 +190,7 @@ export const ReviewScreen: React.FC = () => {
         </Typography>
         {
             election.configuration.questions.map((question, index) =>
-                <Question question={question} key={index} index={index}/>
+                <Question question={question} key={index} questionIndex={index}/>
             )
         }
         <ActionButtons />

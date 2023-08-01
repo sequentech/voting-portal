@@ -9,12 +9,13 @@ import {PageLimit, BreadCrumbSteps, Icon, IconButton, theme, Candidate} from "ui
 import {styled} from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 import {faCircleQuestion, faAngleLeft, faAngleRight} from "@fortawesome/free-solid-svg-icons"
-import { IAnswer, IQuestion } from "sequent-core"
+import { IAnswer, IElectionDTO, IQuestion } from "sequent-core"
 import Image from "mui-image"
 import {useTranslation} from "react-i18next"
 import Button from "@mui/material/Button"
 import {Link as RouterLink} from "react-router-dom"
 import { stringToHtml } from "../services/stringToHtml"
+import { selectBallotSelectionByQuestionAnswer, setBallotSelectionElectionQuestionAnswer } from "../store/ballotSelections/ballotSelectionsSlice"
 
 const StyledLink = styled(RouterLink)`
     margin: auto 0;
@@ -60,11 +61,24 @@ const StyledButton = styled(Button)`
 
 interface IAnswerProps {
     answer: IAnswer
+    questionIndex: number
+    answerIndex: number
+    election: IElectionDTO
 }
-const Answer: React.FC<IAnswerProps> = ({answer}) => {
-    const [checked, setChecked] = useState(false)
+const Answer: React.FC<IAnswerProps> = ({answer, questionIndex, answerIndex, election}) => {
+    const selectionState = useAppSelector(selectBallotSelectionByQuestionAnswer(34570001, questionIndex, answerIndex))
+    const dispatch = useAppDispatch()
     const imageUrl = answer.urls.find((url) => "Image URL" === url.title)?.url
     const infoUrl = answer.urls.find((url) => "URL" === url.title)?.url
+
+
+    const isChecked = () => typeof selectionState === "number" && selectionState > -1
+    const setChecked = (value: boolean) => dispatch(setBallotSelectionElectionQuestionAnswer({
+        election,
+        questionIndex,
+        answerIndex,
+        selection: value ? 0 : -1
+    }))
 
     return <Candidate
         title={answer.text}
@@ -72,7 +86,7 @@ const Answer: React.FC<IAnswerProps> = ({answer}) => {
             stringToHtml(answer.details)
         }
         isActive={true}
-        checked={checked}
+        checked={isChecked()}
         setChecked={setChecked}
         url={infoUrl}
     >
@@ -85,10 +99,12 @@ const Answer: React.FC<IAnswerProps> = ({answer}) => {
 }
 
 interface IQuestionProps {
+    election: IElectionDTO
     question: IQuestion
+    questionIndex: number
 }
 
-const Question: React.FC<IQuestionProps> = ({question}) => {
+const Question: React.FC<IQuestionProps> = ({election, question, questionIndex}) => {
     return <Box>
         <StyledTitle variant="h5">
             <span>{question.title}</span>
@@ -109,8 +125,14 @@ const Question: React.FC<IQuestionProps> = ({question}) => {
         }
         <CandidatesWrapper>
         {
-            question.answers.map((answer, index) =>
-                <Answer answer={answer} key={index}/>
+            question.answers.map((answer, answerIndex) =>
+                <Answer
+                    election={election}
+                    answer={answer}
+                    questionIndex={questionIndex}
+                    answerIndex={answerIndex}
+                    key={answerIndex}
+                />
             )
         }
         </CandidatesWrapper>
@@ -182,7 +204,12 @@ export const VotingScreen: React.FC = () => {
         }
         {
             election.configuration.questions.map((question, index) =>
-                <Question question={question} key={index}/>
+                <Question
+                    election={election}
+                    question={question}
+                    questionIndex={index}
+                    key={index}
+                />
             )
         }
         <ActionButtons />

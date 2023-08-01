@@ -17,15 +17,38 @@ export const ballotSelectionsSlice = createSlice({
     name: "ballotSelections",
     initialState,
     reducers: {
-        setBallotSelectionElection: (state, action: PayloadAction<{electionId: number, selection: BallotSelection}>): BallotSelectionsState => {
-            state[action.payload.electionId] = action.payload.selection
+        setBallotSelectionElectionQuestionAnswer: (state, action: PayloadAction<{election: IElectionDTO, questionIndex: number, answerIndex: number, selection: number}>): BallotSelectionsState => {
+            // check bounds
+            if (action.payload.questionIndex >= action.payload.election.configuration.questions.length
+                || action.payload.answerIndex >= action.payload.election.configuration.questions[action.payload.questionIndex].answers.length) {
+                return state
+            }
+            const currentSelections = state[action.payload.election.id]
+
+            // check election state
+            if (
+                !currentSelections ||
+                !currentSelections[action.payload.questionIndex] || 
+                typeof currentSelections[action.payload.questionIndex][action.payload.answerIndex] !== "number") {
+                state[action.payload.election.id] = 
+                action.payload.election.configuration.questions.map(question =>
+                    question.answers.map(_answer => -1)
+                )
+            }
+            
+            // modify
+            if (currentSelections)
+            {
+                currentSelections[action.payload.questionIndex][action.payload.answerIndex] = action.payload.selection
+            }
+
             return state
         },
     },
 })
 
-export const {setBallotSelectionElection} = ballotSelectionsSlice.actions
+export const {setBallotSelectionElectionQuestionAnswer} = ballotSelectionsSlice.actions
 
-export const selectBallotSelectionByElectionId = (electionId: number) => (state: RootState) => state.ballotSelections[electionId]
+export const selectBallotSelectionByQuestionAnswer  = (electionId: number, questionIndex: number, answerIndex: number) => (state: RootState) => state.ballotSelections[electionId]?.[questionIndex]?.[answerIndex]
 
 export default ballotSelectionsSlice.reducer
