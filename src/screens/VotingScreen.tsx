@@ -16,6 +16,7 @@ import Button from "@mui/material/Button"
 import {Link as RouterLink} from "react-router-dom"
 import { stringToHtml } from "../services/stringToHtml"
 import { selectBallotSelectionByQuestionAnswer, setBallotSelectionElectionQuestionAnswer } from "../store/ballotSelections/ballotSelectionsSlice"
+import { SIMPLE_ELECTION } from "../fixtures/election"
 
 const StyledLink = styled(RouterLink)`
     margin: auto 0;
@@ -66,7 +67,7 @@ interface IAnswerProps {
     election: IElectionDTO
 }
 const Answer: React.FC<IAnswerProps> = ({answer, questionIndex, answerIndex, election}) => {
-    const selectionState = useAppSelector(selectBallotSelectionByQuestionAnswer(34570001, questionIndex, answerIndex))
+    const selectionState = useAppSelector(selectBallotSelectionByQuestionAnswer(election.id, questionIndex, answerIndex))
     const dispatch = useAppDispatch()
     const imageUrl = answer.urls.find((url) => "Image URL" === url.title)?.url
     const infoUrl = answer.urls.find((url) => "URL" === url.title)?.url
@@ -163,11 +164,11 @@ const ActionButtons: React.FC<ActionButtonProps> = ({}) => {
 }
 
 export const VotingScreen: React.FC = () => {
-    const election = useAppSelector(selectElectionById(34570001));
+    const election = useAppSelector(selectElectionById(SIMPLE_ELECTION.id));
     const dispatch = useAppDispatch()
 
     useEffect( () => {
-        dispatch(fetchElectionByIdAsync(3))
+        dispatch(fetchElectionByIdAsync(SIMPLE_ELECTION.id))
     }, [])
 
     if (!election) {

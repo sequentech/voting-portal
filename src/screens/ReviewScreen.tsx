@@ -17,6 +17,7 @@ import {Link as RouterLink} from "react-router-dom"
 import { stringToHtml } from "../services/stringToHtml"
 import { BallotHash } from "../components/BallotHash"
 import { selectBallotSelectionByQuestionAnswer } from "../store/ballotSelections/ballotSelectionsSlice"
+import { SIMPLE_ELECTION } from "../fixtures/election"
 
 const StyledLink = styled(RouterLink)`
     margin: auto 0;
@@ -64,9 +65,10 @@ interface IAnswerProps {
     answer: IAnswer
     questionIndex: number
     answerIndex: number
+    electionId: number
 }
-const Answer: React.FC<IAnswerProps> = ({answer, questionIndex, answerIndex}) => {
-    const selectionState = useAppSelector(selectBallotSelectionByQuestionAnswer(34570001, questionIndex, answerIndex))
+const Answer: React.FC<IAnswerProps> = ({answer, questionIndex, answerIndex, electionId}) => {
+    const selectionState = useAppSelector(selectBallotSelectionByQuestionAnswer(electionId, questionIndex, answerIndex))
     const imageUrl = answer.urls.find((url) => "Image URL" === url.title)?.url
     const infoUrl = answer.urls.find((url) => "URL" === url.title)?.url
 
@@ -93,9 +95,10 @@ const Answer: React.FC<IAnswerProps> = ({answer, questionIndex, answerIndex}) =>
 interface IQuestionProps {
     question: IQuestion
     questionIndex: number
+    electionId: number
 }
 
-const Question: React.FC<IQuestionProps> = ({question, questionIndex}) => {
+const Question: React.FC<IQuestionProps> = ({question, questionIndex, electionId}) => {
     return <Box>
         <StyledTitle variant="h5">
             <span>{String(questionIndex+1) + ". " + question.title}</span>
@@ -113,6 +116,7 @@ const Question: React.FC<IQuestionProps> = ({question, questionIndex}) => {
                     questionIndex={questionIndex}
                     answerIndex={answerIndex}
                     answer={answer}
+                    electionId={electionId}
                 />
             )
         }
@@ -152,11 +156,11 @@ const ActionButtons: React.FC<ActionButtonProps> = ({}) => {
 
 export const ReviewScreen: React.FC = () => {
     const {t} = useTranslation()
-    const election = useAppSelector(selectElectionById(34570001));
+    const election = useAppSelector(selectElectionById(SIMPLE_ELECTION.id));
     const dispatch = useAppDispatch()
 
     useEffect( () => {
-        dispatch(fetchElectionByIdAsync(3))
+        dispatch(fetchElectionByIdAsync(SIMPLE_ELECTION.id))
     }, [])
 
     if (!election) {
@@ -190,7 +194,12 @@ export const ReviewScreen: React.FC = () => {
         </Typography>
         {
             election.configuration.questions.map((question, index) =>
-                <Question question={question} key={index} questionIndex={index}/>
+                <Question
+                    electionId={election.id}
+                    question={question}
+                    key={index}
+                    questionIndex={index}
+                />
             )
         }
         <ActionButtons />

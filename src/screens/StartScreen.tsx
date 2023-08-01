@@ -11,6 +11,7 @@ import Button from "@mui/material/Button"
 import { useAppDispatch, useAppSelector } from "../store/hooks"
 import { fetchElectionByIdAsync, selectElectionById } from "../store/elections/electionsSlice"
 import { stringToHtml } from "../services/stringToHtml"
+import { SIMPLE_ELECTION } from "../fixtures/election"
 
 const StyledTitle = styled(Typography)`
     margin-top: 25.5px;
@@ -63,11 +64,11 @@ const ActionButtons: React.FC = ({}) => {
 
 export const StartScreen: React.FC = () => {
     const {t} = useTranslation()
-    const election = useAppSelector(selectElectionById(34570001));
+    const election = useAppSelector(selectElectionById(SIMPLE_ELECTION.id));
     const dispatch = useAppDispatch()
 
     useEffect( () => {
-        dispatch(fetchElectionByIdAsync(3))
+        dispatch(fetchElectionByIdAsync(SIMPLE_ELECTION.id))
     }, [])
 
     if (!election) {
