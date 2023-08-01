@@ -2,7 +2,13 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 const englishTranslation = {
-    translations: {},
+    translations: {
+        breadcrumbSteps: {
+            ballot: "Ballot",
+            review: "Review",
+            confirmation: "Confirmation",
+        },
+    },
 }
 
 export type TranslationType = typeof englishTranslation

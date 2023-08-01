@@ -4,7 +4,13 @@
 import {TranslationType} from "./en"
 
 const spanishTranslation: TranslationType = {
-    translations: {},
+    translations: {
+        breadcrumbSteps: {
+            ballot: "Ballot",
+            review: "Review",
+            confirmation: "Confirmation",
+        },
+    },
 }
 
 export default spanishTranslation
