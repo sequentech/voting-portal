@@ -1,0 +1,3 @@
+[submodule "ui-essentials"]
+	path = ui-essentials
+	url = https://github.com/sequentech/ui-essentials.git
