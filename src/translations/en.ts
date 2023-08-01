@@ -40,6 +40,16 @@ const englishTranslation = {
                 cancel: "Cancel",
             },
         },
+        confirmationScreen: {
+            title: "Your vote has been cast",
+            description:
+                "The confirmation code bellow verifies that <b>your ballot has been cast successfully</b>. You can use this code to verify that your ballot has been counted.",
+            ballotId: "Ballot ID",
+            printButton: "Print",
+            finishButton: "Finish",
+            verifyCastTitle: "Verify that your ballot has been cast",
+            verifyCastDescription: "You can verify your ballot has been cast correctly at any moment using the following QR code:",
+        },
     },
 }
 

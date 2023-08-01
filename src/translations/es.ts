@@ -42,6 +42,16 @@ const spanishTranslation: TranslationType = {
                 cancel: "Cancelq4",
             },
         },
+        confirmationScreen: {
+            title: "Su voto ha sido emitido",
+            description:
+                "El código de confirmación que aparece a continuación verifica que <b>su voto se ha emitido correctamente</b>. Puede utilizar este código para verificar que su voto ha sido contabilizado.",
+            ballotId: "Localizador del Voto",
+            printButton: "Imprimir",
+            finishButton: "Finalizar",
+            verifyCastTitle: "Compruebe que su voto ha sido emitido",
+            verifyCastDescription: "Puede comprobar en todo momento que su papeleta se ha emitido correctamente utilizando el siguiente código QR:",
+        },
     },
 }
 
