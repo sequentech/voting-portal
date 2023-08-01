@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2023 Félix Robles <felix@sequentech.io>
+//
+// SPDX-License-Identifier: AGPL-3.0-only
 import { IElectionDTO } from "sequent-core"
 
 export const SIMPLE_ELECTION: IElectionDTO = {

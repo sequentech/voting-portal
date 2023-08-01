@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2023 Félix Robles <felix@sequentech.io>
+//
+// SPDX-License-Identifier: AGPL-3.0-only
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit"
 import {RootState, AppThunk} from "../store"
 import {fetchElection} from "./electionsAPI"

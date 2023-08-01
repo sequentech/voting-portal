@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022 Félix Robles <felix@sequentech.io>
+// SPDX-FileCopyrightText: 2023 Félix Robles <felix@sequentech.io>
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 import React, { useEffect, useState } from "react"
@@ -8,13 +8,14 @@ import { Box } from "@mui/material"
 import {PageLimit, BreadCrumbSteps, Icon, IconButton, theme, Candidate} from "ui-essentials"
 import {styled} from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
-import {faCircleQuestion, faAngleLeft, faAngleRight} from "@fortawesome/free-solid-svg-icons"
+import {faCircleQuestion, faAngleLeft, faAngleRight, faFire} from "@fortawesome/free-solid-svg-icons"
 import { IAnswer, IQuestion } from "sequent-core"
 import Image from "mui-image"
 import {useTranslation} from "react-i18next"
 import Button from "@mui/material/Button"
 import {Link as RouterLink} from "react-router-dom"
 import { stringToHtml } from "../services/stringToHtml"
+import { BallotHash } from "../components/BallotHash"
 
 const StyledLink = styled(RouterLink)`
     margin: auto 0;
@@ -86,12 +87,13 @@ const Answer: React.FC<IAnswerProps> = ({answer}) => {
 
 interface IQuestionProps {
     question: IQuestion
+    index: number
 }
 
-const Question: React.FC<IQuestionProps> = ({question}) => {
+const Question: React.FC<IQuestionProps> = ({question, index}) => {
     return <Box>
         <StyledTitle variant="h5">
-            <span>{question.title}</span>
+            <span>{String(index+1) + ". " + question.title}</span>
             <IconButton
                 icon={faCircleQuestion}
                 sx={{fontSize: "unset", lineHeight: "unset", paddingBottom: "2px"}}
@@ -114,12 +116,18 @@ const ActionButtons: React.FC<ActionButtonProps> = ({}) => {
             <StyledLink to="/vote" sx={{margin: "auto 0", width: {xs: "100%", sm: "200px"}}}>
                 <StyledButton sx={{width: {xs: "100%", sm: "200px"}}}>
                     <Icon icon={faAngleLeft} size="sm" />
-                    <span>{t("votingScreen.backButton")}</span>
+                    <span>{t("reviewScreen.backButton")}</span>
+                </StyledButton>
+            </StyledLink>
+            <StyledLink to="/audit" sx={{margin: "auto 0", width: {xs: "100%", sm: "200px"}}}>
+                <StyledButton sx={{width: {xs: "100%", sm: "200px"}}} variant="warning">
+                    <Icon icon={faFire} size="sm" />
+                    <span>{t("reviewScreen.auditButton")}</span>
                 </StyledButton>
             </StyledLink>
             <StyledLink to="/" sx={{margin: "auto 0", width: {xs: "100%", sm: "200px"}}}>
                 <StyledButton sx={{width: {xs: "100%", sm: "200px"}}}>
-                    <span>{t("votingScreen.reviewButton")}</span>
+                    <span>{t("reviewScreen.castBallotButton")}</span>
                     <Icon icon={faAngleRight} size="sm" />
                 </StyledButton>
             </StyledLink>
@@ -128,6 +136,7 @@ const ActionButtons: React.FC<ActionButtonProps> = ({}) => {
 }
 
 export const ReviewScreen: React.FC = () => {
+    const {t} = useTranslation()
     const election = useAppSelector(selectElectionById(34570001));
     const dispatch = useAppDispatch()
 
@@ -140,6 +149,7 @@ export const ReviewScreen: React.FC = () => {
     }
 
     return <PageLimit maxWidth="md">
+        <BallotHash hash="eee6fe54bc8a5f3fce2d2b8aa1909259ceaf7df3266302b7ce1a65ad85a53a92" />
         <Box marginTop="48px">
             <BreadCrumbSteps
                 labels={[
@@ -150,17 +160,22 @@ export const ReviewScreen: React.FC = () => {
                 selected={1}
             />
         </Box>
-        <StyledTitle variant="h4">
-            <span>{election.configuration.title}</span>
+        <StyledTitle variant="h4" fontSize="24px" fontWeight="bold" sx={{margin: 0}}>
+            <span>{t("reviewScreen.title")}</span>
             <IconButton
                 icon={faCircleQuestion}
                 sx={{fontSize: "unset", lineHeight: "unset", paddingBottom: "2px"}}
                 fontSize="16px"
             />
         </StyledTitle>
+        <Typography
+            variant="body2"
+            sx={{color: theme.palette.customGrey.main}}>
+            {stringToHtml(t("reviewScreen.description"))}
+        </Typography>
         {
             election.configuration.questions.map((question, index) =>
-                <Question question={question} key={index}/>
+                <Question question={question} key={index} index={index}/>
             )
         }
         <ActionButtons />
