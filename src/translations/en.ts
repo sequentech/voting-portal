@@ -33,6 +33,12 @@ const englishTranslation = {
             backButton: "Edit ballot",
             castBallotButton: "Cast your ballot",
             auditButton: "Audit ballot",
+            ballotIdHelpDialog: {
+                title: "Vote has not been cast",
+                content: "<p>This is your Ballot Tracker ID, but <b>your vote has not been cast yet</b>. If you try to track the ballot, you will not find it.</p><p>The reason we show the Ballot Tracker ID at this stage is to allow you to audit the correctness of the encrypted ballot before casting it.</p>",
+                ok: "I accept my vote has NOT been cast",
+                cancel: "Cancel",
+            },
         },
     },
 }

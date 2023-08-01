@@ -157,12 +157,12 @@ const ActionButtons: React.FC<ActionButtonProps> = ({}) => {
             <StyledLink to="/" sx={{margin: "auto 0", width: {xs: "100%", sm: "200px"}}}>
                 <StyledButton sx={{width: {xs: "100%", sm: "200px"}}}>
                     <Icon icon={faAngleLeft} size="sm" />
-                    <span>{t("votingScreen.backButton")}</span>
+                    <Box>{t("votingScreen.backButton")}</Box>
                 </StyledButton>
             </StyledLink>
             <StyledLink to="/review" sx={{margin: "auto 0", width: {xs: "100%", sm: "200px"}}}>
                 <StyledButton sx={{width: {xs: "100%", sm: "200px"}}}>
-                    <span>{t("votingScreen.reviewButton")}</span>
+                    <Box>{t("votingScreen.reviewButton")}</Box>
                     <Icon icon={faAngleRight} size="sm" />
                 </StyledButton>
             </StyledLink>
@@ -183,7 +183,7 @@ export const VotingScreen: React.FC = () => {
     }
 
     return (
-        <PageLimit maxWidth="md">
+        <PageLimit maxWidth="lg">
             <Box marginTop="48px">
                 <BreadCrumbSteps
                     labels={[
