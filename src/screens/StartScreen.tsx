@@ -1,38 +1,22 @@
 // SPDX-FileCopyrightText: 2022 Félix Robles <felix@sequentech.io>
 //
 // SPDX-License-Identifier: AGPL-3.0-only
-import React, { useEffect, useState } from "react"
-import { fetchElectionByIdAsync, selectElectionById } from "../store/elections/electionsSlice"
-import { useAppDispatch, useAppSelector } from "../store/hooks"
-import { Box } from "@mui/material"
-import {PageLimit, BreadCrumbSteps, Icon, IconButton, theme, Candidate} from "ui-essentials"
+import { Box, Typography } from "@mui/material"
+import React, { useEffect } from "react"
+import { useTranslation } from "react-i18next"
+import { BreadCrumbSteps, PageLimit, theme } from "ui-essentials"
 import {styled} from "@mui/material/styles"
-import Typography from "@mui/material/Typography"
-import {faCircleQuestion, faAngleLeft, faAngleRight} from "@fortawesome/free-solid-svg-icons"
-import { IAnswer, IQuestion } from "sequent-core"
-import Image from "mui-image"
-import {useTranslation} from "react-i18next"
-import Button from "@mui/material/Button"
 import {Link as RouterLink} from "react-router-dom"
+import Button from "@mui/material/Button"
+import { useAppDispatch, useAppSelector } from "../store/hooks"
+import { fetchElectionByIdAsync, selectElectionById } from "../store/elections/electionsSlice"
 import { stringToHtml } from "../services/stringToHtml"
-
-const StyledLink = styled(RouterLink)`
-    margin: auto 0;
-    text-decoration: none;
-`
 
 const StyledTitle = styled(Typography)`
     margin-top: 25.5px;
     display: flex;
     flex-direction: row;
     gap: 16px;
-`
-
-const CandidatesWrapper = styled(Box)`
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin: 12px 0;
 `
 
 const ActionsContainer = styled(Box)`
@@ -44,6 +28,11 @@ const ActionsContainer = styled(Box)`
     margin-bottom: 20px;
     margin-top: 10px;
     gap: 2px;
+`
+
+const StyledLink = styled(RouterLink)`
+    margin: auto 0;
+    text-decoration: none;
 `
 
 const StyledButton = styled(Button)`
@@ -58,87 +47,22 @@ const StyledButton = styled(Button)`
     }
 `
 
-interface IAnswerProps {
-    answer: IAnswer
-}
-const Answer: React.FC<IAnswerProps> = ({answer}) => {
-    const [checked, setChecked] = useState(false)
-    const imageUrl = answer.urls.find((url) => "Image URL" === url.title)?.url
-    const infoUrl = answer.urls.find((url) => "URL" === url.title)?.url
-
-    return <Candidate
-        title={answer.text}
-        description={
-            stringToHtml(answer.details)
-        }
-        isActive={true}
-        checked={checked}
-        setChecked={setChecked}
-        url={infoUrl}
-    >
-        {
-            imageUrl
-            ? <Image src={imageUrl} duration={100} />
-            : null
-        }
-    </Candidate>
-}
-
-interface IQuestionProps {
-    question: IQuestion
-}
-
-const Question: React.FC<IQuestionProps> = ({question}) => {
-    return <Box>
-        <StyledTitle variant="h5">
-            <span>{question.title}</span>
-            <IconButton
-                icon={faCircleQuestion}
-                sx={{fontSize: "unset", lineHeight: "unset", paddingBottom: "2px"}}
-                fontSize="16px"
-            />
-        </StyledTitle>
-        {
-            question.description
-            ? <Typography
-                variant="body2"
-                sx={{color: theme.palette.customGrey.main}}>
-                {stringToHtml(question.description)}
-            </Typography>
-            : null
-        }
-        <CandidatesWrapper>
-        {
-            question.answers.map((answer, index) =>
-                <Answer answer={answer} key={index}/>
-            )
-        }
-        </CandidatesWrapper>
-    </Box>
-}
-
-interface ActionButtonProps {}
-
-const ActionButtons: React.FC<ActionButtonProps> = ({}) => {
+const ActionButtons: React.FC = ({}) => {
     const {t} = useTranslation()
 
     return (
         <ActionsContainer>
-            <StyledLink to="/" sx={{margin: "auto 0", width: {xs: "100%", sm: "200px"}}}>
-                <StyledButton sx={{width: {xs: "100%", sm: "200px"}}}>
-                    <Icon icon={faAngleLeft} size="sm" />
-                    <span>{t("votingScreen.backButton")}</span>
+            <StyledLink to="/vote" sx={{margin: "auto 0", width: "100%"}}>
+                <StyledButton sx={{width: "100%"}}>
+                    <span>{t("startScreen.startButton")}</span>
                 </StyledButton>
             </StyledLink>
-            <StyledButton sx={{width: {xs: "100%", sm: "200px"}}}>
-                <span>{t("votingScreen.reviewButton")}</span>
-                <Icon icon={faAngleRight} size="sm" />
-            </StyledButton>
         </ActionsContainer>
     )
 }
 
 export const StartScreen: React.FC = () => {
+    const {t} = useTranslation()
     const election = useAppSelector(selectElectionById(34570001));
     const dispatch = useAppDispatch()
 
@@ -161,13 +85,8 @@ export const StartScreen: React.FC = () => {
                 selected={0}
             />
         </Box>
-        <StyledTitle variant="h4">
+        <StyledTitle variant="h3" justifyContent="center" fontWeight="bold">
             <span>{election.configuration.title}</span>
-            <IconButton
-                icon={faCircleQuestion}
-                sx={{fontSize: "unset", lineHeight: "unset", paddingBottom: "2px"}}
-                fontSize="16px"
-            />
         </StyledTitle>
         {
             election.configuration.description
@@ -178,11 +97,38 @@ export const StartScreen: React.FC = () => {
             </Typography>
             : null
         }
-        {
-            election.configuration.questions.map((question, index) =>
-                <Question question={question} key={index}/>
-            )
-        }
+        <Typography variant="h5">
+            {t("startScreen.instructionsTitle")}
+        </Typography>
+        <Typography variant="body2">
+            {t("startScreen.instructionsDescription")}
+        </Typography>
+        <Box sx={{display: "flex", flexDirection: {sm: "column", md: "row"}, gap: {sm: 0, md: "15px"}}}>
+            <Box>
+                <Typography variant="h5" sx={{color: theme.palette.brandColor}}>
+                    {t("startScreen.step1Title")}
+                </Typography>
+                <Typography variant="body2">
+                    {t("startScreen.step1Description")}
+                </Typography>
+            </Box>
+            <Box>
+                <Typography variant="h5" sx={{color: theme.palette.brandColor}}>
+                    {t("startScreen.step2Title")}
+                </Typography>
+                <Typography variant="body2">
+                    {t("startScreen.step2Description")}
+                </Typography>
+            </Box>
+            <Box>
+                <Typography variant="h5" sx={{color: theme.palette.brandColor}}>
+                    {t("startScreen.step3Title")}
+                </Typography>
+                <Typography variant="body2">
+                    {t("startScreen.step3Description")}
+                </Typography>
+            </Box>
+        </Box>
         <ActionButtons />
     </PageLimit>
 }

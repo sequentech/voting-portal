@@ -7,6 +7,8 @@ import {styled} from "@mui/material/styles"
 import {Footer, Header, PageBanner} from "ui-essentials"
 import Stack from "@mui/material/Stack"
 import {StartScreen} from "./screens/StartScreen"
+import {VotingScreen} from "./screens/VotingScreen"
+import {ReviewScreen} from "./screens/ReviewScreen"
 
 const StyledApp = styled(Stack)`
     min-height: 100vh;
@@ -19,6 +21,8 @@ const App = () => {
             <PageBanner marginBottom="auto">
                 <Routes>
                     <Route path="/" element={<StartScreen />} />
+                    <Route path="/vote" element={<VotingScreen />} />
+                    <Route path="/review" element={<ReviewScreen />} />
                 </Routes>
             </PageBanner>
             <Footer />
