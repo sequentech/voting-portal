@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2022 Félix Robles <felix@sequentech.io>
 //
 // SPDX-License-Identifier: AGPL-3.0-only
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { fetchElectionByIdAsync, selectElectionById } from "../store/elections/electionsSlice"
 import { useAppDispatch, useAppSelector } from "../store/hooks"
 import { Box } from "@mui/material"
@@ -61,7 +61,9 @@ interface IAnswerProps {
     answer: IAnswer
 }
 const Answer: React.FC<IAnswerProps> = ({answer}) => {
+    const [checked, setChecked] = useState(false)
     const imageUrl = answer.urls.find((url) => "Image URL" === url.title)?.url
+    const infoUrl = answer.urls.find((url) => "URL" === url.title)?.url
 
     return <Candidate
         title={answer.text}
@@ -71,6 +73,9 @@ const Answer: React.FC<IAnswerProps> = ({answer}) => {
             />
         }
         isActive={true}
+        checked={checked}
+        setChecked={setChecked}
+        url={infoUrl}
     >
         {
             imageUrl
