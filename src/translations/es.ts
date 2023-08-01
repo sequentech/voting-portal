@@ -4,8 +4,7 @@
 import {TranslationType} from "./en"
 
 const spanishTranslation: TranslationType = {
-    translations: {
-    },
+    translations: {},
 }
 
 export default spanishTranslation

@@ -2,8 +2,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 const englishTranslation = {
-    translations: {
-    },
+    translations: {},
 }
 
 export type TranslationType = typeof englishTranslation

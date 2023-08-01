@@ -13,18 +13,12 @@ const StyledApp = styled(Stack)`
 `
 
 const App = () => {
-
     return (
         <StyledApp>
             <Header />
             <PageBanner marginBottom="auto">
                 <Routes>
-                    <Route
-                        path="/"
-                        element={
-                            <StartScreen />
-                        }
-                    />
+                    <Route path="/" element={<StartScreen />} />
                 </Routes>
             </PageBanner>
             <Footer />

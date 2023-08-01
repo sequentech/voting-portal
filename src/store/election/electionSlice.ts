@@ -1,38 +1,38 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState, AppThunk } from '../store'
-import { fetchElection } from './electionAPI'
+import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit"
+import {RootState, AppThunk} from "../store"
+import {fetchElection} from "./electionAPI"
 
 export interface ElectionState {
     id: number
-    status: 'created' | 'started' | 'finished'
+    status: "created" | "started" | "finished"
 }
 
 const initialState = null as ElectionState | null
 
 export const fetchElectionByIdAsync = createAsyncThunk(
-    'election/fetchElectionByIdAsync',
+    "election/fetchElectionByIdAsync",
     async (electionId: number) => {
-      const response = await fetchElection(electionId)
-      // The value we return becomes the `fulfilled` action payload
-      return response;
+        const response = await fetchElection(electionId)
+        // The value we return becomes the `fulfilled` action payload
+        return response
     }
-  )
+)
 
 export const electionSlice = createSlice({
-    name: 'election',
+    name: "election",
     initialState,
     reducers: {
         setElection: (state, action: PayloadAction<ElectionState>): ElectionState => {
             const currentState: Partial<ElectionState> = state || {}
             return {
                 ...currentState,
-                ...action.payload
+                ...action.payload,
             }
-        }
+        },
     },
 })
 
-export const { setElection } = electionSlice.actions
+export const {setElection} = electionSlice.actions
 
 export const selectElectionId = (state: RootState) => state.election?.id
 
