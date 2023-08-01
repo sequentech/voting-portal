@@ -12,6 +12,7 @@ const initialState = null as ElectionState | null
 export const fetchElectionByIdAsync = createAsyncThunk(
     "election/fetchElectionByIdAsync",
     async (electionId: number) => {
+        console.log("trying fetchElectionByIdAsync")
         const response = await fetchElection(electionId)
         // The value we return becomes the `fulfilled` action payload
         return response
@@ -30,6 +31,12 @@ export const electionSlice = createSlice({
             }
         },
     },
+    extraReducers: (builder) => {
+        builder
+          .addCase(fetchElectionByIdAsync.fulfilled, (_state, action) => {
+            return action.payload;
+          })
+      },
 })
 
 export const {setElection} = electionSlice.actions
