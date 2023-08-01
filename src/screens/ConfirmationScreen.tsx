@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 import {Box, Typography} from "@mui/material"
-import React from "react"
+import React, {useState} from "react"
 import {useTranslation} from "react-i18next"
 import {
     PageLimit,
@@ -12,6 +12,7 @@ import {
     stringToHtml,
     theme,
     QRCode,
+    Dialog,
 } from "ui-essentials"
 import {styled} from "@mui/material/styles"
 import {faPrint, faCircleQuestion, faCheck} from "@fortawesome/free-solid-svg-icons"
@@ -111,6 +112,8 @@ const ActionButtons: React.FC = ({}) => {
 
 export const ConfirmationScreen: React.FC = () => {
     const {t} = useTranslation()
+    const [openBallotIdHelp, setOpenBallotIdHelp] = useState(false)
+    const [openConfirmationHelp, setOpenConfirmationHelp] = useState(false)
     const ballotId = "eee6fe54bc8a5f3fce2d2b8aa1909259ceaf7df3266302b7ce1a65ad85a53a92"
     const electionId = SIMPLE_ELECTION.id
     const ballotTrackerUrl = `${window.location.protocol}//${window.location.host}/election/${electionId}/public/ballot-locator/${ballotId}`
@@ -133,7 +136,17 @@ export const ConfirmationScreen: React.FC = () => {
                     icon={faCircleQuestion}
                     sx={{fontSize: "unset", lineHeight: "unset", paddingBottom: "2px"}}
                     fontSize="16px"
+                    onClick={() => setOpenConfirmationHelp(true)}
                 />
+                <Dialog
+                    handleClose={() => setOpenConfirmationHelp(false)}
+                    open={openConfirmationHelp}
+                    title={t("confirmationScreen.confirmationHelpDialog.title")}
+                    ok={t("confirmationScreen.confirmationHelpDialog.ok")}
+                    variant="info"
+                >
+                    {stringToHtml(t("confirmationScreen.confirmationHelpDialog.content"))}
+                </Dialog>
             </StyledTitle>
             <Typography variant="body2" sx={{color: theme.palette.customGrey.main}}>
                 {stringToHtml(t("confirmationScreen.description"))}
@@ -161,7 +174,17 @@ export const ConfirmationScreen: React.FC = () => {
                             marginLeft: "16px",
                         }}
                         fontSize="18px"
+                        onClick={() => setOpenBallotIdHelp(true)}
                     />
+                    <Dialog
+                        handleClose={() => setOpenBallotIdHelp(false)}
+                        open={openBallotIdHelp}
+                        title={t("confirmationScreen.ballotIdHelpDialog.title")}
+                        ok={t("confirmationScreen.ballotIdHelpDialog.ok")}
+                        variant="info"
+                    >
+                        {stringToHtml(t("confirmationScreen.ballotIdHelpDialog.content"))}
+                    </Dialog>
                 </BallotIdBorder>
             </BallotIdContainer>
             <Typography variant="h5" fontSize="18px" fontWeight="bold">

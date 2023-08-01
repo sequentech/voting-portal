@@ -15,18 +15,18 @@ const spanishTranslation: TranslationType = {
             reviewButton: "Next",
         },
         startScreen: {
-            startButton: "Start Voting",
-            instructionsTitle: "Instructions",
-            instructionsDescription: "You need to follow these steps to cast your ballot:",
-            step1Title: "1. Select your options",
+            startButton: "Empezar a votar",
+            instructionsTitle: "Instrucciones",
+            instructionsDescription: "Seguirá estos pasos al emitir tu voto:",
+            step1Title: "1. Seleccione su opción de voto",
             step1Description:
-                "Answer to the election questions one by one as they are shown. This way you will configure your preferences in your ballot.",
-            step2Title: "2. Review your ballot",
+                "Seleccione sus opciones de voto que se presentan una a una. Configurará así las preferencias de su papeleta.",
+            step2Title: "2. Revise su papeleta",
             step2Description:
-                "Once you have chosen your preferences, we will proceed to encrypt them and you'll be shown the ballot's tracker id. You'll also be shown a summary with the content of your ballot for review.",
-            step3Title: "3. Cast your ballot",
+                "Una vez ha elegido sus preferencias, procederemos a cifrarlas y obtendrá un localizador. Le mostraremos el contenido de su papeleta para que pueda revisarla.",
+            step3Title: "3. Envíe su voto",
             step3Description:
-                "You can cast it so that it's properly registered. Alternatively, you can audit that your ballot was correctly encrypted.",
+                "Puede enviar su voto a la urna electrónica para que sea debidamente registrado.",
         },
         reviewScreen: {
             title: "Review your ballot",
@@ -53,6 +53,18 @@ const spanishTranslation: TranslationType = {
             verifyCastTitle: "Compruebe que su voto ha sido emitido",
             verifyCastDescription:
                 "Puede comprobar en todo momento que su papeleta se ha emitido correctamente utilizando el siguiente código QR:",
+            confirmationHelpDialog: {
+                title: "Información: Pantalla de confirmación",
+                content:
+                    "Esta pantalla muestra que su voto se ha emitido correctamente. La información proporcionada en esta página le permite verificar que la papeleta ha sido almacenada en la urna , este proceso puede ser ejecutado en cualquier momento durante el periodo de votación y después de que la elección haya sido cerrada.",
+                ok: "OK",
+            },
+            ballotIdHelpDialog: {
+                title: "Información: Localizador del Voto",
+                content:
+                    "El Localizador del Voto de papeleta es un código que le permite encontrar su papeleta en la urna, este Localizador es único y no contiene información sobre sus selecciones.",
+                ok: "OK",
+            },
         },
     },
 }

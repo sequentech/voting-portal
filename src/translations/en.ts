@@ -51,6 +51,18 @@ const englishTranslation = {
             verifyCastTitle: "Verify that your ballot has been cast",
             verifyCastDescription:
                 "You can verify your ballot has been cast correctly at any moment using the following QR code:",
+            confirmationHelpDialog: {
+                title: "Information: Confirmation Screen",
+                content:
+                    "This screen shows that your vote was successfully cast. The information provided on this page allows you to verify that the ballot has been stored in ballot box , this process can be executed at any time during voting period and after the election has been closed.",
+                ok: "OK",
+            },
+            ballotIdHelpDialog: {
+                title: "Information: Ballot ID",
+                content:
+                    "The Ballot ID is a code that allows you to find your ballot in the ballot box, this ID is unique and doesn't contain information about your selections.",
+                ok: "OK",
+            },
         },
     },
 }
