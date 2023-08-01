@@ -5,11 +5,12 @@ import React, { useEffect } from "react"
 import { fetchElectionByIdAsync, selectElectionById } from "../store/elections/electionsSlice"
 import { useAppDispatch, useAppSelector } from "../store/hooks"
 import { Box } from "@mui/material"
-import {PageLimit, BreadCrumbSteps, IconButton, theme} from "ui-essentials"
+import {PageLimit, BreadCrumbSteps, IconButton, theme, Candidate} from "ui-essentials"
 import {styled} from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 import {faCircleQuestion} from "@fortawesome/free-solid-svg-icons"
 import { IAnswer, IQuestion } from "sequent-core"
+import Image from "mui-image"
 
 const StyledTitle = styled(Typography)`
     margin-top: 25.5px;
@@ -17,13 +18,31 @@ const StyledTitle = styled(Typography)`
     flex-direction: row;
     gap: 16px;
 `
+
+const CandidatesWrapper = styled(Box)`
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 12px 0;
+`
+
 interface IAnswerProps {
     answer: IAnswer
 }
 const Answer: React.FC<IAnswerProps> = ({answer}) => {
-    return <Box>
-        
-    </Box>
+    const imageUrl = answer.urls.find((url) => "Image URL" === url.title)?.url
+
+    return <Candidate
+        title={answer.text}
+        description={answer.details}
+        isActive={true}
+    >
+        {
+            imageUrl
+            ? <Image src={imageUrl} duration={100} />
+            : null
+        }
+    </Candidate>
 }
 
 interface IQuestionProps {
@@ -49,11 +68,13 @@ const Question: React.FC<IQuestionProps> = ({question}) => {
             </Typography>
             : null
         }
+        <CandidatesWrapper>
         {
             question.answers.map((answer, index) =>
                 <Answer answer={answer} key={index}/>
             )
         }
+        </CandidatesWrapper>
     </Box>
 }
 
@@ -80,7 +101,7 @@ export const StartScreen: React.FC = () => {
                 selected={0}
             />
         </Box>
-        <StyledTitle variant="h5">
+        <StyledTitle variant="h4">
             <span>{election.configuration.title}</span>
             <IconButton
                 icon={faCircleQuestion}
