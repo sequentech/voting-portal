@@ -9,6 +9,8 @@ import Stack from "@mui/material/Stack"
 import {StartScreen} from "./screens/StartScreen"
 import {VotingScreen} from "./screens/VotingScreen"
 import {ReviewScreen} from "./screens/ReviewScreen"
+import {ConfirmationScreen} from "./screens/ConfirmationScreen"
+import {AuditScreen} from "./screens/AuditScreen"
 
 const StyledApp = styled(Stack)`
     min-height: 100vh;
@@ -23,6 +25,8 @@ const App = () => {
                     <Route path="/" element={<StartScreen />} />
                     <Route path="/vote" element={<VotingScreen />} />
                     <Route path="/review" element={<ReviewScreen />} />
+                    <Route path="/confirmation" element={<ConfirmationScreen />} />
+                    <Route path="/audit" element={<AuditScreen />} />
                 </Routes>
             </PageBanner>
             <Footer />

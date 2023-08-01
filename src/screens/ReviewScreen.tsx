@@ -154,7 +154,7 @@ const ActionButtons: React.FC<ActionButtonProps> = ({}) => {
                     <Box>{t("reviewScreen.auditButton")}</Box>
                 </StyledButton>
             </StyledLink>
-            <StyledLink to="/" sx={{margin: "auto 0", width: {xs: "100%", sm: "200px"}}}>
+            <StyledLink to="/confirmation" sx={{margin: "auto 0", width: {xs: "100%", sm: "200px"}}}>
                 <StyledButton sx={{width: {xs: "100%", sm: "200px"}}}>
                     <Box>{t("reviewScreen.castBallotButton")}</Box>
                     <Icon icon={faAngleRight} size="sm" />
