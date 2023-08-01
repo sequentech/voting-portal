@@ -14,6 +14,7 @@ import Image from "mui-image"
 import {useTranslation} from "react-i18next"
 import Button from "@mui/material/Button"
 import {Link as RouterLink} from "react-router-dom"
+import { stringToHtml } from "../services/stringToHtml"
 
 const StyledLink = styled(RouterLink)`
     margin: auto 0;
@@ -68,9 +69,7 @@ const Answer: React.FC<IAnswerProps> = ({answer}) => {
     return <Candidate
         title={answer.text}
         description={
-            <span
-                dangerouslySetInnerHTML={{__html: answer.details}}
-            />
+            stringToHtml(answer.details)
         }
         isActive={true}
         checked={checked}
@@ -102,9 +101,9 @@ const Question: React.FC<IQuestionProps> = ({question}) => {
         {
             question.description
             ? <Typography
-                dangerouslySetInnerHTML={{__html: question.description}}
                 variant="body2"
                 sx={{color: theme.palette.customGrey.main}}>
+                {stringToHtml(question.description)}
             </Typography>
             : null
         }
@@ -173,9 +172,9 @@ export const StartScreen: React.FC = () => {
         {
             election.configuration.description
             ? <Typography
-                dangerouslySetInnerHTML={{__html: election.configuration.description}}
                 variant="body2"
                 sx={{color: theme.palette.customGrey.main}}>
+                {stringToHtml(election.configuration.description)}
             </Typography>
             : null
         }
