@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState, AppThunk } from '../store'
-import { fetchElection } from './electionAPI';
-
+import { fetchElection } from './electionAPI'
 
 export interface ElectionState {
     id: number
@@ -23,12 +22,12 @@ export const electionSlice = createSlice({
     name: 'election',
     initialState,
     reducers: {
-        setElection: (state, action: PayloadAction<ElectionState>) => {
+        setElection: (state, action: PayloadAction<ElectionState>): ElectionState => {
             const currentState: Partial<ElectionState> = state || {}
-            state = {
+            return {
                 ...currentState,
                 ...action.payload
-            } as ElectionState
+            }
         }
     },
 })
