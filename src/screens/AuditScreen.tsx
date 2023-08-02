@@ -108,6 +108,8 @@ const ActionButtons: React.FC = ({}) => {
 export const AuditScreen: React.FC = () => {
     const {t} = useTranslation()
     const [openBallotIdHelp, setOpenBallotIdHelp] = useState(false)
+    const [openStep1Help, setOpenStep1Help] = useState(false)
+    const [openStep2Help, setOpenStep2Help] = useState(false)
 
     return (
         <PageLimit maxWidth="lg">
@@ -143,7 +145,17 @@ export const AuditScreen: React.FC = () => {
                     icon={faCircleQuestion}
                     sx={{fontSize: "unset", lineHeight: "unset", paddingBottom: "2px"}}
                     fontSize="16px"
+                    onClick={() => setOpenStep1Help(true)}
                 />
+                <Dialog
+                    handleClose={() => setOpenStep1Help(false)}
+                    open={openStep1Help}
+                    title={t("auditScreen.step1HelpDialog.title")}
+                    ok={t("auditScreen.step1HelpDialog.ok")}
+                    variant="info"
+                >
+                    {stringToHtml(t("auditScreen.step1HelpDialog.content"))}
+                </Dialog>
             </StyledTitle>
             <Typography variant="body2" sx={{color: theme.palette.customGrey.main}}>
                 {stringToHtml(t("auditScreen.description"))}
@@ -154,13 +166,23 @@ export const AuditScreen: React.FC = () => {
                     icon={faCircleQuestion}
                     sx={{fontSize: "unset", lineHeight: "unset", paddingBottom: "2px"}}
                     fontSize="16px"
+                    onClick={() => setOpenStep1Help(true)}
                 />
+                <Dialog
+                    handleClose={() => setOpenStep1Help(false)}
+                    open={openStep1Help}
+                    title={t("auditScreen.step1HelpDialog.title")}
+                    ok={t("auditScreen.step1HelpDialog.ok")}
+                    variant="info"
+                >
+                    {stringToHtml(t("auditScreen.step1HelpDialog.content"))}
+                </Dialog>
             </StyledTitle>
             <Step1Container>
                 <Typography variant="body2" sx={{color: theme.palette.customGrey.main}}>
                     {stringToHtml(t("auditScreen.step1Description"))}
                 </Typography>
-                <StyledButton sx={{width: {xs: "100%", sm: "200px"}}}>
+                <StyledButton sx={{minWidth: "unset", padding: "10px 16px"}}>
                     <Icon icon={faDownload} size="sm" />
                     <Box sx={{display: {xs: "none", md: "flex"}}}>
                         {t("auditScreen.downloadButton")}
@@ -174,7 +196,17 @@ export const AuditScreen: React.FC = () => {
                     icon={faCircleQuestion}
                     sx={{fontSize: "unset", lineHeight: "unset", paddingBottom: "2px"}}
                     fontSize="16px"
+                    onClick={() => setOpenStep2Help(true)}
                 />
+                <Dialog
+                    handleClose={() => setOpenStep2Help(false)}
+                    open={openStep2Help}
+                    title={t("auditScreen.step2HelpDialog.title")}
+                    ok={t("auditScreen.step2HelpDialog.ok")}
+                    variant="info"
+                >
+                    {stringToHtml(t("auditScreen.step2HelpDialog.content"))}
+                </Dialog>
             </StyledTitle>
             <Typography variant="body2" sx={{color: theme.palette.customGrey.main}}>
                 {stringToHtml(t("auditScreen.step2Description"))}
