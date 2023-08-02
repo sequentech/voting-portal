@@ -14099,7 +14099,7 @@ send@0.18.0:
 
 "sequent-core@file:./rust/pkg/sequent-core-0.1.0.tgz":
   version "0.1.0"
-  resolved "file:./rust/pkg/sequent-core-0.1.0.tgz#addea7a7b1b81006906d64959e40d0710d7b8513"
+  resolved "file:./rust/pkg/sequent-core-0.1.0.tgz#9f21bf2ba8ae126e28dc733ed56984afcf946210"
 
 serialize-javascript@^4.0.0:
   version "4.0.0"
