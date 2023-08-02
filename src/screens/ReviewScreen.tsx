@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 import React, {useEffect, useState} from "react"
+import {useNavigate} from "react-router-dom"
 import {fetchElectionByIdAsync, selectElectionById} from "../store/elections/electionsSlice"
 import {useAppDispatch, useAppSelector} from "../store/hooks"
 import {Box} from "@mui/material"
@@ -15,6 +16,7 @@ import {
     stringToHtml,
     BallotHash,
     isNumber,
+    Dialog,
 } from "ui-essentials"
 import {styled} from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
@@ -57,8 +59,6 @@ const ActionsContainer = styled(Box)`
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    margin-bottom: 20px;
-    margin-top: 10px;
     gap: 2px;
 `
 
@@ -113,12 +113,7 @@ const Question: React.FC<IQuestionProps> = ({question, questionIndex, electionId
     return (
         <Box>
             <StyledTitle variant="h5">
-                <span>{String(questionIndex + 1) + ". " + question.title}</span>
-                <IconButton
-                    icon={faCircleQuestion}
-                    sx={{fontSize: "unset", lineHeight: "unset", paddingBottom: "2px"}}
-                    fontSize="16px"
-                />
+                {String(questionIndex + 1) + ". " + question.title}
             </StyledTitle>
             <CandidatesWrapper>
                 {question.answers.map((answer, answerIndex) => (
@@ -139,28 +134,61 @@ interface ActionButtonProps {}
 
 const ActionButtons: React.FC<ActionButtonProps> = ({}) => {
     const {t} = useTranslation()
+    const navigate = useNavigate()
+    const [auditBallotHelp, setAuditBallotHelp] = useState(false)
+    const handleClose = (value: boolean) => {
+        setAuditBallotHelp(false)
+        if (value) {
+            navigate("/audit")
+        }
+    }
 
     return (
-        <ActionsContainer>
-            <StyledLink to="/vote" sx={{margin: "auto 0", width: {xs: "100%", sm: "200px"}}}>
-                <StyledButton sx={{width: {xs: "100%", sm: "200px"}}}>
-                    <Icon icon={faAngleLeft} size="sm" />
-                    <span>{t("reviewScreen.backButton")}</span>
-                </StyledButton>
-            </StyledLink>
-            <StyledLink to="/audit" sx={{margin: "auto 0", width: {xs: "100%", sm: "200px"}}}>
-                <StyledButton sx={{width: {xs: "100%", sm: "200px"}}} variant="warning">
+        <Box sx={{marginBottom: "10px", marginTop: "10px"}}>
+            <StyledButton
+                sx={{display: {xs: "flex", sm: "none"}, marginBottom: "2px", width: "100%"}}
+                variant="warning"
+                onClick={() => setAuditBallotHelp(true)}
+            >
+                <Icon icon={faFire} size="sm" />
+                <Box>{t("reviewScreen.auditButton")}</Box>
+            </StyledButton>
+            <Dialog
+                handleClose={handleClose}
+                open={auditBallotHelp}
+                title={t("reviewScreen.auditBallotHelpDialog.title")}
+                ok={t("reviewScreen.auditBallotHelpDialog.ok")}
+                cancel={t("reviewScreen.auditBallotHelpDialog.cancel")}
+                variant="warning"
+            >
+                {stringToHtml(t("reviewScreen.auditBallotHelpDialog.content"))}
+            </Dialog>
+            <ActionsContainer>
+                <StyledLink to="/vote" sx={{margin: "auto 0", width: {xs: "100%", sm: "200px"}}}>
+                    <StyledButton sx={{width: {xs: "100%", sm: "200px"}}}>
+                        <Icon icon={faAngleLeft} size="sm" />
+                        <Box>{t("reviewScreen.backButton")}</Box>
+                    </StyledButton>
+                </StyledLink>
+                <StyledButton
+                    sx={{width: {xs: "100%", sm: "200px"}, display: {xs: "none", sm: "flex"}}}
+                    variant="warning"
+                    onClick={() => setAuditBallotHelp(true)}
+                >
                     <Icon icon={faFire} size="sm" />
-                    <span>{t("reviewScreen.auditButton")}</span>
+                    <Box>{t("reviewScreen.auditButton")}</Box>
                 </StyledButton>
-            </StyledLink>
-            <StyledLink to="/" sx={{margin: "auto 0", width: {xs: "100%", sm: "200px"}}}>
-                <StyledButton sx={{width: {xs: "100%", sm: "200px"}}}>
-                    <span>{t("reviewScreen.castBallotButton")}</span>
-                    <Icon icon={faAngleRight} size="sm" />
-                </StyledButton>
-            </StyledLink>
-        </ActionsContainer>
+                <StyledLink
+                    to="/confirmation"
+                    sx={{margin: "auto 0", width: {xs: "100%", sm: "200px"}}}
+                >
+                    <StyledButton sx={{width: {xs: "100%", sm: "200px"}}}>
+                        <Box>{t("reviewScreen.castBallotButton")}</Box>
+                        <Icon icon={faAngleRight} size="sm" />
+                    </StyledButton>
+                </StyledLink>
+            </ActionsContainer>
+        </Box>
     )
 }
 
@@ -168,6 +196,7 @@ export const ReviewScreen: React.FC = () => {
     const {t} = useTranslation()
     const election = useAppSelector(selectElectionById(SIMPLE_ELECTION.id))
     const dispatch = useAppDispatch()
+    const [openBallotIdHelp, setOpenBallotIdHelp] = useState(false)
 
     useEffect(() => {
         dispatch(fetchElectionByIdAsync(SIMPLE_ELECTION.id))
@@ -178,8 +207,21 @@ export const ReviewScreen: React.FC = () => {
     }
 
     return (
-        <PageLimit maxWidth="md">
-            <BallotHash hash="eee6fe54bc8a5f3fce2d2b8aa1909259ceaf7df3266302b7ce1a65ad85a53a92" />
+        <PageLimit maxWidth="lg">
+            <BallotHash
+                hash="eee6fe54bc8a5f3fce2d2b8aa1909259ceaf7df3266302b7ce1a65ad85a53a92"
+                onHelpClick={() => setOpenBallotIdHelp(true)}
+            />
+            <Dialog
+                handleClose={() => setOpenBallotIdHelp(false)}
+                open={openBallotIdHelp}
+                title={t("reviewScreen.ballotIdHelpDialog.title")}
+                ok={t("reviewScreen.ballotIdHelpDialog.ok")}
+                cancel={t("reviewScreen.ballotIdHelpDialog.cancel")}
+                variant="info"
+            >
+                {stringToHtml(t("reviewScreen.ballotIdHelpDialog.content"))}
+            </Dialog>
             <Box marginTop="48px">
                 <BreadCrumbSteps
                     labels={[
@@ -191,7 +233,7 @@ export const ReviewScreen: React.FC = () => {
                 />
             </Box>
             <StyledTitle variant="h4" fontSize="24px" fontWeight="bold" sx={{margin: 0}}>
-                <span>{t("reviewScreen.title")}</span>
+                <Box>{t("reviewScreen.title")}</Box>
                 <IconButton
                     icon={faCircleQuestion}
                     sx={{fontSize: "unset", lineHeight: "unset", paddingBottom: "2px"}}

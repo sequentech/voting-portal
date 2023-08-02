@@ -7,6 +7,7 @@ const englishTranslation = {
             ballot: "Ballot",
             review: "Review",
             confirmation: "Confirmation",
+            audit: "Audit",
         },
         votingScreen: {
             backButton: "Back",
@@ -33,6 +34,70 @@ const englishTranslation = {
             backButton: "Edit ballot",
             castBallotButton: "Cast your ballot",
             auditButton: "Audit ballot",
+            ballotIdHelpDialog: {
+                title: "Vote has not been cast",
+                content:
+                    "<p>This is your Ballot Tracker ID, but <b>your vote has not been cast yet</b>. If you try to track the ballot, you will not find it.</p><p>The reason we show the Ballot Tracker ID at this stage is to allow you to audit the correctness of the encrypted ballot before casting it.</p>",
+                ok: "I accept my vote has NOT been cast",
+                cancel: "Cancel",
+            },
+            auditBallotHelpDialog: {
+                title: "Do you want to audit the ballot?",
+                content:
+                    "<p>Auditing the ballot will spoil it and you will need to start the process of voting again if you want to cast your vote. The ballot audit process allows you to verify it's correctly encoded. Doing this process requires you to have important technical knowledge, so we do not recommend it if you do not know what you are doing.</p><p><b>If you just want to cast your ballot, click <u>Cancel</u> to go back to the review ballot screen.</b></p>",
+                ok: "Yes, I want to DISCARD my ballot to audit it",
+                cancel: "Cancel",
+            },
+        },
+        confirmationScreen: {
+            title: "Your vote has been cast",
+            description:
+                "The confirmation code bellow verifies that <b>your ballot has been cast successfully</b>. You can use this code to verify that your ballot has been counted.",
+            ballotId: "Ballot ID",
+            printButton: "Print",
+            finishButton: "Finish",
+            verifyCastTitle: "Verify that your ballot has been cast",
+            verifyCastDescription:
+                "You can verify your ballot has been cast correctly at any moment using the following QR code:",
+            confirmationHelpDialog: {
+                title: "Information: Confirmation Screen",
+                content:
+                    "This screen shows that your vote was successfully cast. The information provided on this page allows you to verify that the ballot has been stored in ballot box , this process can be executed at any time during voting period and after the election has been closed.",
+                ok: "OK",
+            },
+            ballotIdHelpDialog: {
+                title: "Information: Ballot ID",
+                content:
+                    "The Ballot ID is a code that allows you to find your ballot in the ballot box, this ID is unique and doesn't contain information about your selections.",
+                ok: "OK",
+            },
+        },
+        auditScreen: {
+            printButton: "Print",
+            restartButton: "Start Voting",
+            title: "Audit your Ballot",
+            description: "To verify your ballot you will need. to follow the bellow steps:",
+            step1Title: "1. Download or copy the following information",
+            step1Description:
+                "Your <b>Ballot ID</b> that appears at the top of the screen and your encrypted ballot below:",
+            step1HelpDialog: {
+                title: "Copy the Encrypted Ballot",
+                content:
+                    "You can download or copy your encrypted ballot to audit the ballot and verify the encrypted content contains your selections.",
+                ok: "OK",
+            },
+            downloadButton: "Download",
+            step2Title: "2. Follow the steps on this tutorial",
+            step2Description:
+                '(<a href="https://github.com/sequentech/new-ballot-verifier/blob/main/README.md">click here</a>, a new tab will open in your browser)',
+            step2HelpDialog: {
+                title: "Audit ballot tutorial",
+                content:
+                    "To audit your ballot you will need to follow the steps shown in the tutorial, this includes the download of a desktop application used to verify the encrypted ballot independently from the website.",
+                ok: "OK",
+            },
+            bottomWarning:
+                "For security reason, when you audit your ballot, it need to be spoiled. To continue with the voting process, you need to click ‘<b>Start Voting</b>’ bellow.",
         },
     },
 }

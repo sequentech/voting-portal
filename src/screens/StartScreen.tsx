@@ -53,9 +53,7 @@ const ActionButtons: React.FC = ({}) => {
     return (
         <ActionsContainer>
             <StyledLink to="/vote" sx={{margin: "auto 0", width: "100%"}}>
-                <StyledButton sx={{width: "100%"}}>
-                    <span>{t("startScreen.startButton")}</span>
-                </StyledButton>
+                <StyledButton sx={{width: "100%"}}>{t("startScreen.startButton")}</StyledButton>
             </StyledLink>
         </ActionsContainer>
     )
@@ -75,7 +73,7 @@ export const StartScreen: React.FC = () => {
     }
 
     return (
-        <PageLimit maxWidth="md">
+        <PageLimit maxWidth="lg">
             <Box marginTop="48px">
                 <BreadCrumbSteps
                     labels={[
