@@ -195,7 +195,7 @@ export const VotingScreen: React.FC = () => {
                 />
             </Box>
             <StyledTitle variant="h4">
-                <span>{election.configuration.title}</span>
+                <Box>{election.configuration.title}</Box>
                 <IconButton
                     icon={faCircleQuestion}
                     sx={{fontSize: "unset", lineHeight: "unset", paddingBottom: "2px"}}

@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 import React, {useEffect, useState} from "react"
+import {useNavigate} from "react-router-dom"
 import {fetchElectionByIdAsync, selectElectionById} from "../store/elections/electionsSlice"
 import {useAppDispatch, useAppSelector} from "../store/hooks"
 import {Box} from "@mui/material"
@@ -133,18 +134,35 @@ interface ActionButtonProps {}
 
 const ActionButtons: React.FC<ActionButtonProps> = ({}) => {
     const {t} = useTranslation()
+    const navigate = useNavigate()
+    const [auditBallotHelp, setAuditBallotHelp] = useState(false)
+    const handleClose = (value: boolean) => {
+        setAuditBallotHelp(false)
+        if (value) {
+            navigate("/audit")
+        }
+    }
 
     return (
         <Box sx={{marginBottom: "10px", marginTop: "10px"}}>
-            <StyledLink
-                to="/audit"
-                sx={{display: {xs: "block", sm: "none"}, marginBottom: "2px", width: "100%"}}
+            <StyledButton
+                sx={{display: {xs: "flex", sm: "none"}, marginBottom: "2px", width: "100%"}}
+                variant="warning"
+                onClick={() => setAuditBallotHelp(true)}
             >
-                <StyledButton sx={{width: "100%"}} variant="warning">
-                    <Icon icon={faFire} size="sm" />
-                    <Box>{t("reviewScreen.auditButton")}</Box>
-                </StyledButton>
-            </StyledLink>
+                <Icon icon={faFire} size="sm" />
+                <Box>{t("reviewScreen.auditButton")}</Box>
+            </StyledButton>
+            <Dialog
+                handleClose={handleClose}
+                open={auditBallotHelp}
+                title={t("reviewScreen.auditBallotHelpDialog.title")}
+                ok={t("reviewScreen.auditBallotHelpDialog.ok")}
+                cancel={t("reviewScreen.auditBallotHelpDialog.cancel")}
+                variant="warning"
+            >
+                {stringToHtml(t("reviewScreen.auditBallotHelpDialog.content"))}
+            </Dialog>
             <ActionsContainer>
                 <StyledLink to="/vote" sx={{margin: "auto 0", width: {xs: "100%", sm: "200px"}}}>
                     <StyledButton sx={{width: {xs: "100%", sm: "200px"}}}>
@@ -152,19 +170,14 @@ const ActionButtons: React.FC<ActionButtonProps> = ({}) => {
                         <Box>{t("reviewScreen.backButton")}</Box>
                     </StyledButton>
                 </StyledLink>
-                <StyledLink
-                    to="/audit"
-                    sx={{
-                        display: {xs: "none", sm: "block"},
-                        margin: "auto 0",
-                        width: {xs: "100%", sm: "200px"},
-                    }}
+                <StyledButton
+                    sx={{width: {xs: "100%", sm: "200px"}, display: {xs: "none", sm: "flex"}}}
+                    variant="warning"
+                    onClick={() => setAuditBallotHelp(true)}
                 >
-                    <StyledButton sx={{width: {xs: "100%", sm: "200px"}}} variant="warning">
-                        <Icon icon={faFire} size="sm" />
-                        <Box>{t("reviewScreen.auditButton")}</Box>
-                    </StyledButton>
-                </StyledLink>
+                    <Icon icon={faFire} size="sm" />
+                    <Box>{t("reviewScreen.auditButton")}</Box>
+                </StyledButton>
                 <StyledLink
                     to="/confirmation"
                     sx={{margin: "auto 0", width: {xs: "100%", sm: "200px"}}}

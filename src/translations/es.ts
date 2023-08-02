@@ -9,6 +9,7 @@ const spanishTranslation: TranslationType = {
             ballot: "Ballot",
             review: "Review",
             confirmation: "Confirmation",
+            audit: "Auditar",
         },
         votingScreen: {
             backButton: "Back",
@@ -42,6 +43,13 @@ const spanishTranslation: TranslationType = {
                 ok: "Acepto que mi voto NO ha sido emitido",
                 cancel: "Cancelq4",
             },
+            auditBallotHelpDialog: {
+                title: "¿Realmente quieres Auditar tu papeleta?",
+                content:
+                    "<p>La auditoría de la papeleta lo invalidará y tendrás que iniciar el proceso de votación de nuevo si deseas emitir tu voto. El proceso de auditoría de la papeleta permite verificar que está codificada correctamente. Hacer este proceso requiere que unos conocimientos técnicos importantes, por lo que no se recomienda si no sabes lo que estás haciendo.</p><p><b>Si lo que desea es emitir su voto, en <u>Cancelar</u> para volver a la pantalla de revisión de votación.</b></p>",
+                ok: "Si, quiero INVALIDAR mi papeleta para AUDITARLA",
+                cancel: "Cancelar",
+            },
         },
         confirmationScreen: {
             title: "Su voto ha sido emitido",
@@ -65,6 +73,33 @@ const spanishTranslation: TranslationType = {
                     "El Localizador del Voto de papeleta es un código que le permite encontrar su papeleta en la urna, este Localizador es único y no contiene información sobre sus selecciones.",
                 ok: "OK",
             },
+        },
+        auditScreen: {
+            printButton: "Imprimir",
+            restartButton: "Iniciar votación",
+            title: "Audite su Papeleta",
+            description: "Para verificar su papeleta deberá seguir los siguientes pasos:",
+            step1Title: "1. Descargue o copie la siguiente información",
+            step1Description:
+                "Tu <b>Localizador del Voto</b> que aparece en la parte superior de la pantalla y tu papeleta encriptada a continuación:",
+            step1HelpDialog: {
+                title: "Copiar el Voto Cifrado",
+                content:
+                    "Puede descargar o copiar su Voto Cifrado para auditarlo y verificar que el contenido encriptado contiene sus selecciones.",
+                ok: "OK",
+            },
+            downloadButton: "Descargar",
+            step2Title: "2. Siga los pasos de este tutorial",
+            step2Description:
+                '(<a href="https://github.com/sequentech/new-ballot-verifier/blob/main/README.md">haga click aquí</a>, se abrirá una nueva pestaña en su navegador)',
+            step2HelpDialog: {
+                title: "Tutorial sobre la Auditoría del Voto",
+                content:
+                    "Para auditar su voto deberá seguir los pasos indicados en el tutorial, que incluyen la descarga de una aplicación de escritorio utilizada para verificar el voto cifrado independientemente del sitio web.",
+                ok: "OK",
+            },
+            bottomWarning:
+                "Por motivos de seguridad, cuando audite su papeleta, deberá invalidarla. Para continuar con el proceso de votación, haga clic en ‘<b>Iniciar votación/b>’.",
         },
     },
 }
