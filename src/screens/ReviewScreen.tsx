@@ -15,7 +15,7 @@ import {
     Candidate,
     stringToHtml,
     BallotHash,
-    isNumber,
+    isUndefined,
     Dialog,
 } from "ui-essentials"
 import {styled} from "@mui/material/styles"
@@ -31,7 +31,7 @@ import Image from "mui-image"
 import {useTranslation} from "react-i18next"
 import Button from "@mui/material/Button"
 import {Link as RouterLink} from "react-router-dom"
-import {selectBallotSelectionByQuestionAnswer} from "../store/ballotSelections/ballotSelectionsSlice"
+import {selectBallotSelectionVoteChoice} from "../store/ballotSelections/ballotSelectionsSlice"
 import {SIMPLE_ELECTION} from "../fixtures/election"
 
 const StyledLink = styled(RouterLink)`
@@ -82,12 +82,12 @@ interface IAnswerProps {
 }
 const Answer: React.FC<IAnswerProps> = ({answer, questionIndex, answerIndex, electionId}) => {
     const selectionState = useAppSelector(
-        selectBallotSelectionByQuestionAnswer(electionId, questionIndex, answerIndex)
+        selectBallotSelectionVoteChoice(electionId, questionIndex, answerIndex)
     )
     const imageUrl = answer.urls.find((url) => "Image URL" === url.title)?.url
     const infoUrl = answer.urls.find((url) => "URL" === url.title)?.url
 
-    if (!isNumber(selectionState) || selectionState < 0) {
+    if (isUndefined(selectionState) || selectionState.selected < 0) {
         return null
     }
 

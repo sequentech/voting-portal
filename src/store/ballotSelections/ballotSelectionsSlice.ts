@@ -3,10 +3,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 import {createSlice, PayloadAction} from "@reduxjs/toolkit"
 import {RootState} from "../store"
-import {IElectionDTO} from "sequent-core"
-import {isNumber} from "ui-essentials"
+import {IElectionDTO, IDecodedVoteQuestion, IDecodedVoteChoice} from "sequent-core"
+import {isUndefined} from "ui-essentials"
 
-export type BallotSelection = Array<Array<number>>
+export type BallotSelection = Array<IDecodedVoteQuestion>
 
 export interface BallotSelectionsState {
     [electionId: number]: BallotSelection | undefined
@@ -18,45 +18,56 @@ export const ballotSelectionsSlice = createSlice({
     name: "ballotSelections",
     initialState,
     reducers: {
-        setBallotSelectionElectionQuestionAnswer: (
+        setBallotSelectionVoteChoice: (
             state,
             action: PayloadAction<{
                 election: IElectionDTO
                 questionIndex: number
-                answerIndex: number
-                selection: number
+                voteChoice: IDecodedVoteChoice
             }>
         ): BallotSelectionsState => {
             // check bounds
             if (
                 action.payload.questionIndex >=
                     action.payload.election.configuration.questions.length ||
-                action.payload.answerIndex >=
+                action.payload.voteChoice.id >=
                     action.payload.election.configuration.questions[action.payload.questionIndex]
                         .answers.length
             ) {
                 return state
             }
-            const currentSelections = state[action.payload.election.id]
+            let currentElection = state[action.payload.election.id]
+            let currentChoiceIndex = currentElection?.[
+                action.payload.questionIndex
+            ]?.choices.findIndex((choice) => action.payload.voteChoice.id === choice.id)
+            const currentChoice =
+                !isUndefined(currentElection) &&
+                !isUndefined(currentChoiceIndex) &&
+                currentChoiceIndex > -1
+                    ? currentElection[action.payload.questionIndex]?.choices[currentChoiceIndex]
+                    : undefined
 
             // check election state
-            if (
-                !currentSelections ||
-                !currentSelections[action.payload.questionIndex] ||
-                !isNumber(
-                    currentSelections[action.payload.questionIndex][action.payload.answerIndex]
-                )
-            ) {
+            if (!currentElection || isUndefined(currentChoice)) {
                 state[action.payload.election.id] =
-                    action.payload.election.configuration.questions.map((question) =>
-                        question.answers.map((_answer) => -1)
-                    )
+                    action.payload.election.configuration.questions.map((question) => ({
+                        is_explicit_invalid: false,
+                        invalid_errors: [],
+                        choices: question.answers.map((answer) => ({
+                            id: answer.id,
+                            selected: -1,
+                        })),
+                    }))
             }
 
             // modify
-            if (currentSelections) {
-                currentSelections[action.payload.questionIndex][action.payload.answerIndex] =
-                    action.payload.selection
+            currentElection = state[action.payload.election.id]
+            currentChoiceIndex = currentElection?.[action.payload.questionIndex]?.choices.findIndex(
+                (choice) => action.payload.voteChoice.id === choice.id
+            )
+            if (currentElection && !isUndefined(currentChoiceIndex)) {
+                currentElection[action.payload.questionIndex].choices[currentChoiceIndex] =
+                    action.payload.voteChoice
             }
 
             return state
@@ -64,10 +75,12 @@ export const ballotSelectionsSlice = createSlice({
     },
 })
 
-export const {setBallotSelectionElectionQuestionAnswer} = ballotSelectionsSlice.actions
+export const {setBallotSelectionVoteChoice} = ballotSelectionsSlice.actions
 
-export const selectBallotSelectionByQuestionAnswer =
+export const selectBallotSelectionVoteChoice =
     (electionId: number, questionIndex: number, answerIndex: number) => (state: RootState) =>
-        state.ballotSelections[electionId]?.[questionIndex]?.[answerIndex]
+        state.ballotSelections[electionId]?.[questionIndex]?.choices.find(
+            (choice) => answerIndex === choice.id
+        )
 
 export default ballotSelectionsSlice.reducer

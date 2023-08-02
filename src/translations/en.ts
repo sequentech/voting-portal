@@ -12,6 +12,12 @@ const englishTranslation = {
         votingScreen: {
             backButton: "Back",
             reviewButton: "Next",
+            ballotHelpDialog: {
+                title: "Information: Ballot screen",
+                content:
+                    "This screen shows the contest you are elegible to vote. You can make your section by activate the checkbox on the Candidate/Answer right. To reset your selections, click “<b>Clear selection</b>” button, to move to next step, click “<b>Next</b>” button bellow.",
+                ok: "OK",
+            },
         },
         startScreen: {
             startButton: "Start Voting",

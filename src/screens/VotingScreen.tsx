@@ -13,7 +13,8 @@ import {
     theme,
     Candidate,
     stringToHtml,
-    isNumber,
+    isUndefined,
+    Dialog,
 } from "ui-essentials"
 import {styled} from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
@@ -24,8 +25,8 @@ import {useTranslation} from "react-i18next"
 import Button from "@mui/material/Button"
 import {Link as RouterLink} from "react-router-dom"
 import {
-    selectBallotSelectionByQuestionAnswer,
-    setBallotSelectionElectionQuestionAnswer,
+    selectBallotSelectionVoteChoice,
+    setBallotSelectionVoteChoice,
 } from "../store/ballotSelections/ballotSelectionsSlice"
 import {SIMPLE_ELECTION} from "../fixtures/election"
 
@@ -79,20 +80,22 @@ interface IAnswerProps {
 }
 const Answer: React.FC<IAnswerProps> = ({answer, questionIndex, answerIndex, election}) => {
     const selectionState = useAppSelector(
-        selectBallotSelectionByQuestionAnswer(election.id, questionIndex, answerIndex)
+        selectBallotSelectionVoteChoice(election.id, questionIndex, answerIndex)
     )
     const dispatch = useAppDispatch()
     const imageUrl = answer.urls.find((url) => "Image URL" === url.title)?.url
     const infoUrl = answer.urls.find((url) => "URL" === url.title)?.url
 
-    const isChecked = () => isNumber(selectionState) && selectionState > -1
+    const isChecked = () => !isUndefined(selectionState) && selectionState.selected > -1
     const setChecked = (value: boolean) =>
         dispatch(
-            setBallotSelectionElectionQuestionAnswer({
+            setBallotSelectionVoteChoice({
                 election,
                 questionIndex,
-                answerIndex,
-                selection: value ? 0 : -1,
+                voteChoice: {
+                    id: answerIndex,
+                    selected: value ? 0 : -1,
+                },
             })
         )
 
@@ -119,14 +122,7 @@ interface IQuestionProps {
 const Question: React.FC<IQuestionProps> = ({election, question, questionIndex}) => {
     return (
         <Box>
-            <StyledTitle variant="h5">
-                <span>{question.title}</span>
-                <IconButton
-                    icon={faCircleQuestion}
-                    sx={{fontSize: "unset", lineHeight: "unset", paddingBottom: "2px"}}
-                    fontSize="16px"
-                />
-            </StyledTitle>
+            <StyledTitle variant="h5">{question.title}</StyledTitle>
             {question.description ? (
                 <Typography variant="body2" sx={{color: theme.palette.customGrey.main}}>
                     {stringToHtml(question.description)}
@@ -171,8 +167,10 @@ const ActionButtons: React.FC<ActionButtonProps> = ({}) => {
 }
 
 export const VotingScreen: React.FC = () => {
+    const {t} = useTranslation()
     const election = useAppSelector(selectElectionById(SIMPLE_ELECTION.id))
     const dispatch = useAppDispatch()
+    const [openBallotHelp, setOpenBallotHelp] = useState(false)
 
     useEffect(() => {
         dispatch(fetchElectionByIdAsync(SIMPLE_ELECTION.id))
@@ -200,7 +198,17 @@ export const VotingScreen: React.FC = () => {
                     icon={faCircleQuestion}
                     sx={{fontSize: "unset", lineHeight: "unset", paddingBottom: "2px"}}
                     fontSize="16px"
+                    onClick={() => setOpenBallotHelp(false)}
                 />
+                <Dialog
+                    handleClose={() => setOpenBallotHelp(false)}
+                    open={openBallotHelp}
+                    title={t("votingScreen.ballotHelpDialog.title")}
+                    ok={t("votingScreen.ballotHelpDialog.ok")}
+                    variant="info"
+                >
+                    {stringToHtml(t("votingScreen.ballotHelpDialog.content"))}
+                </Dialog>
             </StyledTitle>
             {election.configuration.description ? (
                 <Typography variant="body2" sx={{color: theme.palette.customGrey.main}}>
