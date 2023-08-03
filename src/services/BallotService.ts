@@ -1,12 +1,20 @@
 // SPDX-FileCopyrightText: 2023 Félix Robles <felix@sequentech.io>
 //
 // SPDX-License-Identifier: AGPL-3.0-only
-import {IAuditableBallot, IElectionDTO, hash_cyphertext_js, encrypt_decoded_question_js} from "sequent-core"
-import { BallotSelection } from "../store/ballotSelections/ballotSelectionsSlice"
+import {
+    IAuditableBallot,
+    IElectionDTO,
+    hash_cyphertext_js,
+    encrypt_decoded_question_js,
+} from "sequent-core"
+import {BallotSelection} from "../store/ballotSelections/ballotSelectionsSlice"
 
 export interface IBallotService {
     hashBallot512: (auditableBallot: IAuditableBallot) => string
-    encryptBallotSelection: (ballotSelection: BallotSelection, election: IElectionDTO) => IAuditableBallot
+    encryptBallotSelection: (
+        ballotSelection: BallotSelection,
+        election: IElectionDTO
+    ) => IAuditableBallot
 }
 
 export const hashBallot512 = (auditableBallot: IAuditableBallot): string => {
@@ -18,7 +26,10 @@ export const hashBallot512 = (auditableBallot: IAuditableBallot): string => {
     }
 }
 
-export const encryptBallotSelection = (ballotSelection: BallotSelection, election: IElectionDTO): IAuditableBallot => {
+export const encryptBallotSelection = (
+    ballotSelection: BallotSelection,
+    election: IElectionDTO
+): IAuditableBallot => {
     try {
         return encrypt_decoded_question_js(ballotSelection, election)
     } catch (e) {

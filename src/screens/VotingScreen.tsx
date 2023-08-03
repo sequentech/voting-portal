@@ -30,7 +30,7 @@ import {
     selectBallotSelection,
 } from "../store/ballotSelections/ballotSelectionsSlice"
 import {SIMPLE_ELECTION} from "../fixtures/election"
-import { provideBallotService } from "../services/BallotService"
+import {provideBallotService} from "../services/BallotService"
 
 const StyledLink = styled(RouterLink)`
     margin: auto 0;
@@ -152,9 +152,7 @@ interface ActionButtonProps {
 const ActionButtons: React.FC<ActionButtonProps> = ({election}) => {
     const {t} = useTranslation()
     const {encryptBallotSelection} = provideBallotService()
-    const selectionState = useAppSelector(
-        selectBallotSelection(election.id)
-    )
+    const selectionState = useAppSelector(selectBallotSelection(election.id))
     const navigate = useNavigate()
 
     const encryptAndReview = () => {
@@ -166,8 +164,7 @@ const ActionButtons: React.FC<ActionButtonProps> = ({election}) => {
             console.log("success encrypting ballot:")
             console.log(auditableBallot)
             navigate("/review")
-        }
-        catch (error) {
+        } catch (error) {
             console.log(error)
         }
     }
@@ -245,7 +242,7 @@ export const VotingScreen: React.FC = () => {
                     key={index}
                 />
             ))}
-            <ActionButtons election={election}/>
+            <ActionButtons election={election} />
         </PageLimit>
     )
 }
