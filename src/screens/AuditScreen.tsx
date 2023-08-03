@@ -14,6 +14,8 @@ import {
     WarnBox,
     stringToHtml,
     theme,
+    isUndefined,
+    downloadBlob,
 } from "ui-essentials"
 import {styled} from "@mui/material/styles"
 import Button from "@mui/material/Button"
@@ -116,7 +118,14 @@ export const AuditScreen: React.FC = () => {
     const [openStep1Help, setOpenStep1Help] = useState(false)
     const [openStep2Help, setOpenStep2Help] = useState(false)
 
-    const doHashBallot = () => {}
+    const downloadAuditableBallot = () => {
+        if (!auditableBallot) {
+            return
+        }
+        let fileName = `${auditableBallot.config.id}-ballot.json`
+        let file = new File([JSON.stringify(auditableBallot)], fileName, {type: "application/json"})
+        downloadBlob(file, fileName)
+    }
 
     return (
         <PageLimit maxWidth="lg">
@@ -189,7 +198,11 @@ export const AuditScreen: React.FC = () => {
                 <Typography variant="body2" sx={{color: theme.palette.customGrey.main}}>
                     {stringToHtml(t("auditScreen.step1Description"))}
                 </Typography>
-                <StyledButton sx={{minWidth: "unset", padding: "10px 16px"}} onClick={doHashBallot}>
+                <StyledButton
+                    sx={{minWidth: "unset", padding: "10px 16px"}}
+                    onClick={downloadAuditableBallot}
+                    disabled={isUndefined(auditableBallot)}
+                >
                     <Icon icon={faDownload} size="sm" />
                     <Box sx={{display: {xs: "none", md: "flex"}}}>
                         {t("auditScreen.downloadButton")}
