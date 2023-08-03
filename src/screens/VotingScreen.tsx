@@ -23,7 +23,7 @@ import {IAnswer, IElectionDTO, IQuestion} from "sequent-core"
 import Image from "mui-image"
 import {useTranslation} from "react-i18next"
 import Button from "@mui/material/Button"
-import {Link as RouterLink, useNavigate} from "react-router-dom"
+import {Link as RouterLink, useNavigate, useParams} from "react-router-dom"
 import {
     selectBallotSelectionVoteChoice,
     setBallotSelectionVoteChoice,
@@ -166,7 +166,7 @@ const ActionButtons: React.FC<ActionButtonProps> = ({election}) => {
             console.log("Success encrypting ballot:")
             console.log(auditableBallot)
             dispatch(setAuditableBallot(auditableBallot))
-            navigate("/review")
+            navigate(`/election/${election.id}/review`)
         } catch (error) {
             console.log("ERROR encrypting ballot:")
             console.log(error)
@@ -190,14 +190,17 @@ const ActionButtons: React.FC<ActionButtonProps> = ({election}) => {
 }
 
 export const VotingScreen: React.FC = () => {
+    const {electionId} = useParams<{electionId?: string}>()
+    const election = useAppSelector(selectElectionById(Number(electionId)))
     const {t} = useTranslation()
-    const election = useAppSelector(selectElectionById(SIMPLE_ELECTION.id))
     const dispatch = useAppDispatch()
     const [openBallotHelp, setOpenBallotHelp] = useState(false)
 
     useEffect(() => {
-        dispatch(fetchElectionByIdAsync(SIMPLE_ELECTION.id))
-    }, [])
+        if (!isUndefined(electionId) && isUndefined(election)) {
+            dispatch(fetchElectionByIdAsync(Number(electionId)))
+        }
+    }, [electionId, election])
 
     if (!election) {
         return <Box>Loading</Box>
@@ -221,7 +224,7 @@ export const VotingScreen: React.FC = () => {
                     icon={faCircleQuestion}
                     sx={{fontSize: "unset", lineHeight: "unset", paddingBottom: "2px"}}
                     fontSize="16px"
-                    onClick={() => setOpenBallotHelp(false)}
+                    onClick={() => setOpenBallotHelp(true)}
                 />
                 <Dialog
                     handleClose={() => setOpenBallotHelp(false)}

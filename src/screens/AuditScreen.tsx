@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Félix Robles <felix@sequentech.io>
 //
 // SPDX-License-Identifier: AGPL-3.0-only
-import React, {useState} from "react"
+import React, {useEffect, useState} from "react"
 import {Box} from "@mui/material"
 import {useTranslation} from "react-i18next"
 import {
@@ -25,11 +25,11 @@ import {
     faCircleQuestion,
     faDownload,
 } from "@fortawesome/free-solid-svg-icons"
-import {Link as RouterLink} from "react-router-dom"
+import {Link as RouterLink, useParams} from "react-router-dom"
 import {Typography} from "@mui/material"
 import {SIMPLE_ELECTION} from "../fixtures/election"
-import {useAppSelector} from "../store/hooks"
-import {selectElectionById} from "../store/elections/electionsSlice"
+import {useAppDispatch, useAppSelector} from "../store/hooks"
+import {fetchElectionByIdAsync, selectElectionById} from "../store/elections/electionsSlice"
 import {selectAuditableBallot} from "../store/auditableBallots/auditableBallotsSlice"
 
 const ActionsContainer = styled(Box)`
@@ -110,13 +110,20 @@ const ActionButtons: React.FC = ({}) => {
 }
 
 export const AuditScreen: React.FC = () => {
-    const electionId = SIMPLE_ELECTION.id
-    const election = useAppSelector(selectElectionById(electionId))
+    const {electionId} = useParams<{electionId?: string}>()
+    const election = useAppSelector(selectElectionById(Number(electionId)))
     const auditableBallot = useAppSelector(selectAuditableBallot(election?.id || 0))
     const {t} = useTranslation()
+    const dispatch = useAppDispatch()
     const [openBallotIdHelp, setOpenBallotIdHelp] = useState(false)
     const [openStep1Help, setOpenStep1Help] = useState(false)
     const [openStep2Help, setOpenStep2Help] = useState(false)
+
+    useEffect(() => {
+        if (!isUndefined(electionId) && isUndefined(election)) {
+            dispatch(fetchElectionByIdAsync(Number(electionId)))
+        }
+    }, [electionId, election])
 
     const downloadAuditableBallot = () => {
         if (!auditableBallot) {

@@ -33,7 +33,7 @@ export const SIMPLE_ELECTION: IElectionDTO = {
                         urls: [
                             {
                                 title: "Image URL",
-                                url: "XFQwVFL.jpg",
+                                url: "/XFQwVFL.jpg",
                             },
                         ],
                         text: "Example option 1",
@@ -51,7 +51,7 @@ export const SIMPLE_ELECTION: IElectionDTO = {
                             },
                             {
                                 title: "Image URL",
-                                url: "XFQwVFL.jpg",
+                                url: "/XFQwVFL.jpg",
                             },
                         ],
                         text: "Example option 2",

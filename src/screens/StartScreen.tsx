@@ -11,6 +11,7 @@ import Button from "@mui/material/Button"
 import {useAppDispatch, useAppSelector} from "../store/hooks"
 import {fetchElectionByIdAsync, selectElectionById} from "../store/elections/electionsSlice"
 import {SIMPLE_ELECTION} from "../fixtures/election"
+import {IElectionDTO} from "sequent-core"
 
 const StyledTitle = styled(Typography)`
     margin-top: 25.5px;
@@ -47,12 +48,16 @@ const StyledButton = styled(Button)`
     }
 `
 
-const ActionButtons: React.FC = ({}) => {
+interface ActionButtonsProps {
+    election: IElectionDTO
+}
+
+const ActionButtons: React.FC<ActionButtonsProps> = ({election}) => {
     const {t} = useTranslation()
 
     return (
         <ActionsContainer>
-            <StyledLink to="/vote" sx={{margin: "auto 0", width: "100%"}}>
+            <StyledLink to={`/election/${election.id}/vote`} sx={{margin: "auto 0", width: "100%"}}>
                 <StyledButton sx={{width: "100%"}}>{t("startScreen.startButton")}</StyledButton>
             </StyledLink>
         </ActionsContainer>
@@ -120,7 +125,7 @@ export const StartScreen: React.FC = () => {
                     <Typography variant="body2">{t("startScreen.step3Description")}</Typography>
                 </Box>
             </Box>
-            <ActionButtons />
+            <ActionButtons election={election} />
         </PageLimit>
     )
 }

@@ -23,10 +23,13 @@ const App = () => {
             <PageBanner marginBottom="auto">
                 <Routes>
                     <Route path="/" element={<StartScreen />} />
-                    <Route path="/vote" element={<VotingScreen />} />
-                    <Route path="/review" element={<ReviewScreen />} />
-                    <Route path="/confirmation" element={<ConfirmationScreen />} />
-                    <Route path="/audit" element={<AuditScreen />} />
+                    <Route path="/election/:electionId/vote" element={<VotingScreen />} />
+                    <Route path="/election/:electionId/review" element={<ReviewScreen />} />
+                    <Route
+                        path="/election/:electionId/confirmation"
+                        element={<ConfirmationScreen />}
+                    />
+                    <Route path="/election/:electionId/audit" element={<AuditScreen />} />
                 </Routes>
             </PageBanner>
             <Footer />
