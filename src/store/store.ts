@@ -4,6 +4,7 @@
 import {configureStore, ThunkAction, Action} from "@reduxjs/toolkit"
 import electionsReducer from "./elections/electionsSlice"
 import ballotSelectionsReducer from "./ballotSelections/ballotSelectionsSlice"
+import auditableBallotsReducer from "./auditableBallots/auditableBallotsSlice"
 
 // note: use Immer, https://immerjs.github.io/immer/
 
@@ -11,6 +12,7 @@ export const store = configureStore({
     reducer: {
         elections: electionsReducer,
         ballotSelections: ballotSelectionsReducer,
+        auditableBallots: auditableBallotsReducer,
     },
 })
 
