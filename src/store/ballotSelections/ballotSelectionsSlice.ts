@@ -83,4 +83,7 @@ export const selectBallotSelectionVoteChoice =
             (choice) => answerIndex === choice.id
         )
 
+
+export const selectBallotSelection = (electionId: number) => (state: RootState) => state.ballotSelections[electionId]
+
 export default ballotSelectionsSlice.reducer

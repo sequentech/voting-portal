@@ -23,12 +23,14 @@ import {IAnswer, IElectionDTO, IQuestion} from "sequent-core"
 import Image from "mui-image"
 import {useTranslation} from "react-i18next"
 import Button from "@mui/material/Button"
-import {Link as RouterLink} from "react-router-dom"
+import {Link as RouterLink, useNavigate} from "react-router-dom"
 import {
     selectBallotSelectionVoteChoice,
     setBallotSelectionVoteChoice,
+    selectBallotSelection,
 } from "../store/ballotSelections/ballotSelectionsSlice"
 import {SIMPLE_ELECTION} from "../fixtures/election"
+import { provideBallotService } from "../services/BallotService"
 
 const StyledLink = styled(RouterLink)`
     margin: auto 0;
@@ -143,10 +145,32 @@ const Question: React.FC<IQuestionProps> = ({election, question, questionIndex})
     )
 }
 
-interface ActionButtonProps {}
+interface ActionButtonProps {
+    election: IElectionDTO
+}
 
-const ActionButtons: React.FC<ActionButtonProps> = ({}) => {
+const ActionButtons: React.FC<ActionButtonProps> = ({election}) => {
     const {t} = useTranslation()
+    const {encryptBallotSelection} = provideBallotService()
+    const selectionState = useAppSelector(
+        selectBallotSelection(election.id)
+    )
+    const navigate = useNavigate()
+
+    const encryptAndReview = () => {
+        if (isUndefined(selectionState)) {
+            return
+        }
+        try {
+            const auditableBallot = encryptBallotSelection(selectionState, election)
+            console.log("success encrypting ballot:")
+            console.log(auditableBallot)
+            navigate("/review")
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
 
     return (
         <ActionsContainer>
@@ -156,12 +180,10 @@ const ActionButtons: React.FC<ActionButtonProps> = ({}) => {
                     <Box>{t("votingScreen.backButton")}</Box>
                 </StyledButton>
             </StyledLink>
-            <StyledLink to="/review" sx={{margin: "auto 0", width: {xs: "100%", sm: "200px"}}}>
-                <StyledButton sx={{width: {xs: "100%", sm: "200px"}}}>
-                    <Box>{t("votingScreen.reviewButton")}</Box>
-                    <Icon icon={faAngleRight} size="sm" />
-                </StyledButton>
-            </StyledLink>
+            <StyledButton sx={{width: {xs: "100%", sm: "200px"}}} onClick={encryptAndReview}>
+                <Box>{t("votingScreen.reviewButton")}</Box>
+                <Icon icon={faAngleRight} size="sm" />
+            </StyledButton>
         </ActionsContainer>
     )
 }
@@ -223,7 +245,7 @@ export const VotingScreen: React.FC = () => {
                     key={index}
                 />
             ))}
-            <ActionButtons />
+            <ActionButtons election={election}/>
         </PageLimit>
     )
 }
