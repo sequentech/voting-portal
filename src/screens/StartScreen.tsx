@@ -102,23 +102,23 @@ export const StartScreen: React.FC = () => {
             <Box
                 sx={{
                     display: "flex",
-                    flexDirection: {sm: "column", md: "row"},
+                    flexDirection: {xs: "column", md: "row"},
                     gap: {sm: 0, md: "15px"},
                 }}
             >
-                <Box>
+                <Box sx={{width: {xs: "100%", md: "33.33333333%"}}}>
                     <Typography variant="h5" sx={{color: theme.palette.brandColor}}>
                         {t("startScreen.step1Title")}
                     </Typography>
                     <Typography variant="body2">{t("startScreen.step1Description")}</Typography>
                 </Box>
-                <Box>
+                <Box sx={{width: {xs: "100%", md: "33.33333333%"}}}>
                     <Typography variant="h5" sx={{color: theme.palette.brandColor}}>
                         {t("startScreen.step2Title")}
                     </Typography>
                     <Typography variant="body2">{t("startScreen.step2Description")}</Typography>
                 </Box>
-                <Box>
+                <Box sx={{width: {xs: "100%", md: "33.33333333%"}}}>
                     <Typography variant="h5" sx={{color: theme.palette.brandColor}}>
                         {t("startScreen.step3Title")}
                     </Typography>
