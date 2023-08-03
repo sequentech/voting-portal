@@ -25,11 +25,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons"
 import {Link as RouterLink} from "react-router-dom"
 import {Typography} from "@mui/material"
-import { SIMPLE_ELECTION } from "../fixtures/election"
-import { useAppSelector } from "../store/hooks"
-import { selectElectionById } from "../store/elections/electionsSlice"
-import { selectAuditableBallot } from "../store/auditableBallots/auditableBallotsSlice"
-
+import {SIMPLE_ELECTION} from "../fixtures/election"
+import {useAppSelector} from "../store/hooks"
+import {selectElectionById} from "../store/elections/electionsSlice"
+import {selectAuditableBallot} from "../store/auditableBallots/auditableBallotsSlice"
 
 const ActionsContainer = styled(Box)`
     display: flex;
@@ -117,8 +116,7 @@ export const AuditScreen: React.FC = () => {
     const [openStep1Help, setOpenStep1Help] = useState(false)
     const [openStep2Help, setOpenStep2Help] = useState(false)
 
-    const doHashBallot = () => {
-    }
+    const doHashBallot = () => {}
 
     return (
         <PageLimit maxWidth="lg">
@@ -199,7 +197,9 @@ export const AuditScreen: React.FC = () => {
                 </StyledButton>
             </Step1Container>
 
-            <AuditableBallotData>{auditableBallot && JSON.stringify(auditableBallot) || ""}</AuditableBallotData>
+            <AuditableBallotData>
+                {(auditableBallot && JSON.stringify(auditableBallot)) || ""}
+            </AuditableBallotData>
             <StyledTitle variant="h5" fontWeight="bold" fontSize="18px">
                 <Box>{t("auditScreen.step2Title")}</Box>
                 <IconButton

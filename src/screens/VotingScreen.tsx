@@ -31,7 +31,7 @@ import {
 } from "../store/ballotSelections/ballotSelectionsSlice"
 import {SIMPLE_ELECTION} from "../fixtures/election"
 import {provideBallotService} from "../services/BallotService"
-import { setAuditableBallot } from "../store/auditableBallots/auditableBallotsSlice"
+import {setAuditableBallot} from "../store/auditableBallots/auditableBallotsSlice"
 
 const StyledLink = styled(RouterLink)`
     margin: auto 0;

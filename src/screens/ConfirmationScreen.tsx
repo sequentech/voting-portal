@@ -20,9 +20,9 @@ import Button from "@mui/material/Button"
 import {Link as RouterLink} from "react-router-dom"
 import Link from "@mui/material/Link"
 import {SIMPLE_ELECTION} from "../fixtures/election"
-import { useAppSelector } from "../store/hooks"
-import { selectElectionById } from "../store/elections/electionsSlice"
-import { selectAuditableBallot } from "../store/auditableBallots/auditableBallotsSlice"
+import {useAppSelector} from "../store/hooks"
+import {selectElectionById} from "../store/elections/electionsSlice"
+import {selectAuditableBallot} from "../store/auditableBallots/auditableBallotsSlice"
 
 const StyledTitle = styled(Typography)`
     margin-top: 25.5px;

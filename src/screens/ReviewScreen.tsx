@@ -33,7 +33,7 @@ import Button from "@mui/material/Button"
 import {Link as RouterLink} from "react-router-dom"
 import {selectBallotSelectionVoteChoice} from "../store/ballotSelections/ballotSelectionsSlice"
 import {SIMPLE_ELECTION} from "../fixtures/election"
-import { selectAuditableBallot } from "../store/auditableBallots/auditableBallotsSlice"
+import {selectAuditableBallot} from "../store/auditableBallots/auditableBallotsSlice"
 
 const StyledLink = styled(RouterLink)`
     margin: auto 0;
