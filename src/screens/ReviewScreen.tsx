@@ -33,6 +33,7 @@ import Button from "@mui/material/Button"
 import {Link as RouterLink} from "react-router-dom"
 import {selectBallotSelectionVoteChoice} from "../store/ballotSelections/ballotSelectionsSlice"
 import {SIMPLE_ELECTION} from "../fixtures/election"
+import { selectAuditableBallot } from "../store/auditableBallots/auditableBallotsSlice"
 
 const StyledLink = styled(RouterLink)`
     margin: auto 0;
@@ -195,6 +196,7 @@ const ActionButtons: React.FC<ActionButtonProps> = ({}) => {
 export const ReviewScreen: React.FC = () => {
     const {t} = useTranslation()
     const election = useAppSelector(selectElectionById(SIMPLE_ELECTION.id))
+    const auditableBallot = useAppSelector(selectAuditableBallot(election?.id || 0))
     const dispatch = useAppDispatch()
     const [openBallotIdHelp, setOpenBallotIdHelp] = useState(false)
 
@@ -209,7 +211,7 @@ export const ReviewScreen: React.FC = () => {
     return (
         <PageLimit maxWidth="lg">
             <BallotHash
-                hash="eee6fe54bc8a5f3fce2d2b8aa1909259ceaf7df3266302b7ce1a65ad85a53a92"
+                hash={auditableBallot?.ballot_hash || ""}
                 onHelpClick={() => setOpenBallotIdHelp(true)}
             />
             <Dialog

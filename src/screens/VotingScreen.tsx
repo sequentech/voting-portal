@@ -31,6 +31,7 @@ import {
 } from "../store/ballotSelections/ballotSelectionsSlice"
 import {SIMPLE_ELECTION} from "../fixtures/election"
 import {provideBallotService} from "../services/BallotService"
+import { setAuditableBallot } from "../store/auditableBallots/auditableBallotsSlice"
 
 const StyledLink = styled(RouterLink)`
     margin: auto 0;
@@ -154,6 +155,7 @@ const ActionButtons: React.FC<ActionButtonProps> = ({election}) => {
     const {encryptBallotSelection} = provideBallotService()
     const selectionState = useAppSelector(selectBallotSelection(election.id))
     const navigate = useNavigate()
+    const dispatch = useAppDispatch()
 
     const encryptAndReview = () => {
         if (isUndefined(selectionState)) {
@@ -161,10 +163,12 @@ const ActionButtons: React.FC<ActionButtonProps> = ({election}) => {
         }
         try {
             const auditableBallot = encryptBallotSelection(selectionState, election)
-            console.log("success encrypting ballot:")
+            console.log("Success encrypting ballot:")
             console.log(auditableBallot)
+            dispatch(setAuditableBallot(auditableBallot))
             navigate("/review")
         } catch (error) {
+            console.log("ERROR encrypting ballot:")
             console.log(error)
         }
     }

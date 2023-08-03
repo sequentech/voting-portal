@@ -20,6 +20,9 @@ import Button from "@mui/material/Button"
 import {Link as RouterLink} from "react-router-dom"
 import Link from "@mui/material/Link"
 import {SIMPLE_ELECTION} from "../fixtures/election"
+import { useAppSelector } from "../store/hooks"
+import { selectElectionById } from "../store/elections/electionsSlice"
+import { selectAuditableBallot } from "../store/auditableBallots/auditableBallotsSlice"
 
 const StyledTitle = styled(Typography)`
     margin-top: 25.5px;
@@ -121,11 +124,13 @@ const ActionButtons: React.FC = ({}) => {
 }
 
 export const ConfirmationScreen: React.FC = () => {
+    const electionId = SIMPLE_ELECTION.id
+    const election = useAppSelector(selectElectionById(electionId))
+    const auditableBallot = useAppSelector(selectAuditableBallot(election?.id || 0))
+    const ballotId = auditableBallot?.ballot_hash || ""
     const {t} = useTranslation()
     const [openBallotIdHelp, setOpenBallotIdHelp] = useState(false)
     const [openConfirmationHelp, setOpenConfirmationHelp] = useState(false)
-    const ballotId = "eee6fe54bc8a5f3fce2d2b8aa1909259ceaf7df3266302b7ce1a65ad85a53a92"
-    const electionId = SIMPLE_ELECTION.id
     const ballotTrackerUrl = `${window.location.protocol}//${window.location.host}/election/${electionId}/public/ballot-locator/${ballotId}`
 
     return (
