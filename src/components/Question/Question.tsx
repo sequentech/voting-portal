@@ -2,18 +2,12 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 import React from "react"
-import {useAppDispatch, useAppSelector} from "../../store/hooks"
 import {Box} from "@mui/material"
-import {theme, Candidate, CandidatesList, stringToHtml, isUndefined} from "ui-essentials"
+import {theme, CandidatesList, stringToHtml} from "ui-essentials"
 import {styled} from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 import {IAnswer, IElectionDTO, IQuestion} from "sequent-core"
-import Image from "mui-image"
-import Button from "@mui/material/Button"
-import {
-    selectBallotSelectionVoteChoice,
-    setBallotSelectionVoteChoice,
-} from "../../store/ballotSelections/ballotSelectionsSlice"
+import {Answer} from "../Answer/Answer"
 
 const StyledTitle = styled(Typography)`
     margin-top: 25.5px;
@@ -28,48 +22,6 @@ const CandidatesWrapper = styled(Box)`
     gap: 12px;
     margin: 12px 0;
 `
-
-interface IAnswerProps {
-    answer: IAnswer
-    questionIndex: number
-    election: IElectionDTO
-    hasCategory?: boolean
-}
-const Answer: React.FC<IAnswerProps> = ({answer, questionIndex, election, hasCategory}) => {
-    const selectionState = useAppSelector(
-        selectBallotSelectionVoteChoice(election.id, questionIndex, answer.id)
-    )
-    const dispatch = useAppDispatch()
-    const imageUrl = answer.urls.find((url) => "Image URL" === url.title)?.url
-    const infoUrl = answer.urls.find((url) => "URL" === url.title)?.url
-
-    const isChecked = () => !isUndefined(selectionState) && selectionState.selected > -1
-    const setChecked = (value: boolean) =>
-        dispatch(
-            setBallotSelectionVoteChoice({
-                election,
-                questionIndex,
-                voteChoice: {
-                    id: answer.id,
-                    selected: value ? 0 : -1,
-                },
-            })
-        )
-
-    return (
-        <Candidate
-            title={answer.text}
-            description={stringToHtml(answer.details)}
-            isActive={true}
-            checked={isChecked()}
-            setChecked={setChecked}
-            url={infoUrl}
-            hasCategory={hasCategory}
-        >
-            {imageUrl ? <Image src={imageUrl} duration={100} /> : null}
-        </Candidate>
-    )
-}
 
 interface ICategory {
     header?: IAnswer
@@ -107,7 +59,7 @@ const createCategories = (question: IQuestion): [Array<IAnswer>, CategoriesMap] 
     return [nonCategoryCandidates, categoriesMap]
 }
 
-interface IQuestionProps {
+export interface IQuestionProps {
     election: IElectionDTO
     question: IQuestion
     questionIndex: number
