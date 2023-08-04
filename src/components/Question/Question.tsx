@@ -3,11 +3,12 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 import React from "react"
 import {Box} from "@mui/material"
-import {theme, CandidatesList, stringToHtml} from "ui-essentials"
+import {theme, stringToHtml} from "ui-essentials"
 import {styled} from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 import {IAnswer, IElectionDTO, IQuestion} from "sequent-core"
 import {Answer} from "../Answer/Answer"
+import {AnswersList, ICategory} from "../AnswersList/AnswersList"
 
 const StyledTitle = styled(Typography)`
     margin-top: 25.5px;
@@ -22,11 +23,6 @@ const CandidatesWrapper = styled(Box)`
     gap: 12px;
     margin: 12px 0;
 `
-
-interface ICategory {
-    header?: IAnswer
-    candidates: Array<IAnswer>
-}
 
 type CategoriesMap = {[category: string]: ICategory}
 
@@ -96,23 +92,16 @@ export const Question: React.FC<IQuestionProps> = ({election, question, question
             ) : null}
             <CandidatesWrapper>
                 {Object.entries(categoriesMap).map(([categoryName, category], categoryIndex) => (
-                    <CandidatesList
+                    <AnswersList
+                        key={categoryIndex}
                         title={categoryName}
                         isActive={true}
-                        key={categoryIndex}
-                        isCheckable={checkableLists}
-                    >
-                        {category.candidates.map((candidate, candidateIndex) => (
-                            <Answer
-                                election={election}
-                                answer={candidate}
-                                questionIndex={questionIndex}
-                                key={candidateIndex}
-                                hasCategory={true}
-                                isActive={checkableCandidates}
-                            />
-                        ))}
-                    </CandidatesList>
+                        checkableLists={checkableLists}
+                        checkableCandidates={checkableCandidates}
+                        category={category}
+                        election={election}
+                        questionIndex={questionIndex}
+                    />
                 ))}
                 {nonCategoryCandidates.map((answer, answerIndex) => (
                     <Answer
