@@ -76,16 +76,12 @@ interface ICategory {
     candidates: Array<IAnswer>
 }
 
-interface IQuestionProps {
-    election: IElectionDTO
-    question: IQuestion
-    questionIndex: number
-}
+type CategoriesMap = {[category: string]: ICategory}
 
-export const Question: React.FC<IQuestionProps> = ({election, question, questionIndex}) => {
+const createCategories = (question: IQuestion): [Array<IAnswer>, CategoriesMap] => {
     const nonCategoryCandidates: Array<IAnswer> = []
 
-    const categoriesMap : {[category: string]: ICategory} = {}
+    const categoriesMap: CategoriesMap = {}
     for (let answer of question.answers) {
         let category = answer.category
         if (!category) {
@@ -98,14 +94,27 @@ export const Question: React.FC<IQuestionProps> = ({election, question, question
                 candidates: [],
             }
         }
-        const isCategoryHeader = answer.urls.some(url => "isCategoryList" === url.title && "true" === url.url)
+        const isCategoryHeader = answer.urls.some(
+            (url) => "isCategoryList" === url.title && "true" === url.url
+        )
         if (isCategoryHeader) {
             categoriesMap[category].header = answer
         } else {
             categoriesMap[category].candidates.push(answer)
-        } 
+        }
     }
-    
+
+    return [nonCategoryCandidates, categoriesMap]
+}
+
+interface IQuestionProps {
+    election: IElectionDTO
+    question: IQuestion
+    questionIndex: number
+}
+
+export const Question: React.FC<IQuestionProps> = ({election, question, questionIndex}) => {
+    const [nonCategoryCandidates, categoriesMap] = createCategories(question)
 
     return (
         <Box>
@@ -116,25 +125,19 @@ export const Question: React.FC<IQuestionProps> = ({election, question, question
                 </Typography>
             ) : null}
             <CandidatesWrapper>
-                {Object.entries(categoriesMap).map(([categoryName, category], categoryIndex) =>
-                    <CandidatesList
-                        title={categoryName}
-                        isActive={true}
-                        key={categoryIndex}
-                    >
-                        {
-                            category.candidates.map((candidate, candidateIndex) =>
-                                <Answer
-                                    election={election}
-                                    answer={candidate}
-                                    questionIndex={questionIndex}
-                                    key={candidateIndex}
-                                    hasCategory={true}
-                                />
-                            )
-                        }
+                {Object.entries(categoriesMap).map(([categoryName, category], categoryIndex) => (
+                    <CandidatesList title={categoryName} isActive={true} key={categoryIndex}>
+                        {category.candidates.map((candidate, candidateIndex) => (
+                            <Answer
+                                election={election}
+                                answer={candidate}
+                                questionIndex={questionIndex}
+                                key={candidateIndex}
+                                hasCategory={true}
+                            />
+                        ))}
                     </CandidatesList>
-                )}
+                ))}
                 {nonCategoryCandidates.map((answer, answerIndex) => (
                     <Answer
                         election={election}
