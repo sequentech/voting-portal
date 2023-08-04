@@ -4,7 +4,7 @@
 import React from "react"
 import {useAppDispatch, useAppSelector} from "../../store/hooks"
 import {Box} from "@mui/material"
-import {theme, Candidate, stringToHtml, isUndefined} from "ui-essentials"
+import {theme, Candidate, CandidatesList, stringToHtml, isUndefined} from "ui-essentials"
 import {styled} from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 import {IAnswer, IElectionDTO, IQuestion} from "sequent-core"
@@ -32,12 +32,12 @@ const CandidatesWrapper = styled(Box)`
 interface IAnswerProps {
     answer: IAnswer
     questionIndex: number
-    answerIndex: number
     election: IElectionDTO
+    hasCategory?: boolean
 }
-const Answer: React.FC<IAnswerProps> = ({answer, questionIndex, answerIndex, election}) => {
+const Answer: React.FC<IAnswerProps> = ({answer, questionIndex, election, hasCategory}) => {
     const selectionState = useAppSelector(
-        selectBallotSelectionVoteChoice(election.id, questionIndex, answerIndex)
+        selectBallotSelectionVoteChoice(election.id, questionIndex, answer.id)
     )
     const dispatch = useAppDispatch()
     const imageUrl = answer.urls.find((url) => "Image URL" === url.title)?.url
@@ -50,7 +50,7 @@ const Answer: React.FC<IAnswerProps> = ({answer, questionIndex, answerIndex, ele
                 election,
                 questionIndex,
                 voteChoice: {
-                    id: answerIndex,
+                    id: answer.id,
                     selected: value ? 0 : -1,
                 },
             })
@@ -64,10 +64,16 @@ const Answer: React.FC<IAnswerProps> = ({answer, questionIndex, answerIndex, ele
             checked={isChecked()}
             setChecked={setChecked}
             url={infoUrl}
+            hasCategory={hasCategory}
         >
             {imageUrl ? <Image src={imageUrl} duration={100} /> : null}
         </Candidate>
     )
+}
+
+interface ICategory {
+    header?: IAnswer
+    candidates: Array<IAnswer>
 }
 
 interface IQuestionProps {
@@ -77,6 +83,30 @@ interface IQuestionProps {
 }
 
 export const Question: React.FC<IQuestionProps> = ({election, question, questionIndex}) => {
+    const nonCategoryCandidates: Array<IAnswer> = []
+
+    const categoriesMap : {[category: string]: ICategory} = {}
+    for (let answer of question.answers) {
+        let category = answer.category
+        if (!category) {
+            nonCategoryCandidates.push(answer)
+            continue
+        }
+        if (!categoriesMap[category]) {
+            // initialize category
+            categoriesMap[category] = {
+                candidates: [],
+            }
+        }
+        const isCategoryHeader = answer.urls.some(url => "isCategoryList" === url.title && "true" === url.url)
+        if (isCategoryHeader) {
+            categoriesMap[category].header = answer
+        } else {
+            categoriesMap[category].candidates.push(answer)
+        } 
+    }
+    
+
     return (
         <Box>
             <StyledTitle variant="h5">{question.title}</StyledTitle>
@@ -86,12 +116,30 @@ export const Question: React.FC<IQuestionProps> = ({election, question, question
                 </Typography>
             ) : null}
             <CandidatesWrapper>
-                {question.answers.map((answer, answerIndex) => (
+                {Object.entries(categoriesMap).map(([categoryName, category], categoryIndex) =>
+                    <CandidatesList
+                        title={categoryName}
+                        isActive={true}
+                        key={categoryIndex}
+                    >
+                        {
+                            category.candidates.map((candidate, candidateIndex) =>
+                                <Answer
+                                    election={election}
+                                    answer={candidate}
+                                    questionIndex={questionIndex}
+                                    key={candidateIndex}
+                                    hasCategory={true}
+                                />
+                            )
+                        }
+                    </CandidatesList>
+                )}
+                {nonCategoryCandidates.map((answer, answerIndex) => (
                     <Answer
                         election={election}
                         answer={answer}
                         questionIndex={questionIndex}
-                        answerIndex={answerIndex}
                         key={answerIndex}
                     />
                 ))}
