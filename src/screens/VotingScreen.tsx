@@ -13,7 +13,8 @@ import {
     theme,
     Candidate,
     stringToHtml,
-    isNumber,
+    isUndefined,
+    Dialog,
 } from "ui-essentials"
 import {styled} from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
@@ -22,12 +23,15 @@ import {IAnswer, IElectionDTO, IQuestion} from "sequent-core"
 import Image from "mui-image"
 import {useTranslation} from "react-i18next"
 import Button from "@mui/material/Button"
-import {Link as RouterLink} from "react-router-dom"
+import {Link as RouterLink, useNavigate, useParams} from "react-router-dom"
 import {
-    selectBallotSelectionByQuestionAnswer,
-    setBallotSelectionElectionQuestionAnswer,
+    selectBallotSelectionVoteChoice,
+    setBallotSelectionVoteChoice,
+    selectBallotSelection,
 } from "../store/ballotSelections/ballotSelectionsSlice"
 import {SIMPLE_ELECTION} from "../fixtures/election"
+import {provideBallotService} from "../services/BallotService"
+import {setAuditableBallot} from "../store/auditableBallots/auditableBallotsSlice"
 
 const StyledLink = styled(RouterLink)`
     margin: auto 0;
@@ -79,20 +83,22 @@ interface IAnswerProps {
 }
 const Answer: React.FC<IAnswerProps> = ({answer, questionIndex, answerIndex, election}) => {
     const selectionState = useAppSelector(
-        selectBallotSelectionByQuestionAnswer(election.id, questionIndex, answerIndex)
+        selectBallotSelectionVoteChoice(election.id, questionIndex, answerIndex)
     )
     const dispatch = useAppDispatch()
     const imageUrl = answer.urls.find((url) => "Image URL" === url.title)?.url
     const infoUrl = answer.urls.find((url) => "URL" === url.title)?.url
 
-    const isChecked = () => isNumber(selectionState) && selectionState > -1
+    const isChecked = () => !isUndefined(selectionState) && selectionState.selected > -1
     const setChecked = (value: boolean) =>
         dispatch(
-            setBallotSelectionElectionQuestionAnswer({
+            setBallotSelectionVoteChoice({
                 election,
                 questionIndex,
-                answerIndex,
-                selection: value ? 0 : -1,
+                voteChoice: {
+                    id: answerIndex,
+                    selected: value ? 0 : -1,
+                },
             })
         )
 
@@ -119,14 +125,7 @@ interface IQuestionProps {
 const Question: React.FC<IQuestionProps> = ({election, question, questionIndex}) => {
     return (
         <Box>
-            <StyledTitle variant="h5">
-                <span>{question.title}</span>
-                <IconButton
-                    icon={faCircleQuestion}
-                    sx={{fontSize: "unset", lineHeight: "unset", paddingBottom: "2px"}}
-                    fontSize="16px"
-                />
-            </StyledTitle>
+            <StyledTitle variant="h5">{question.title}</StyledTitle>
             {question.description ? (
                 <Typography variant="body2" sx={{color: theme.palette.customGrey.main}}>
                     {stringToHtml(question.description)}
@@ -147,10 +146,32 @@ const Question: React.FC<IQuestionProps> = ({election, question, questionIndex})
     )
 }
 
-interface ActionButtonProps {}
+interface ActionButtonProps {
+    election: IElectionDTO
+}
 
-const ActionButtons: React.FC<ActionButtonProps> = ({}) => {
+const ActionButtons: React.FC<ActionButtonProps> = ({election}) => {
     const {t} = useTranslation()
+    const {encryptBallotSelection} = provideBallotService()
+    const selectionState = useAppSelector(selectBallotSelection(election.id))
+    const navigate = useNavigate()
+    const dispatch = useAppDispatch()
+
+    const encryptAndReview = () => {
+        if (isUndefined(selectionState)) {
+            return
+        }
+        try {
+            const auditableBallot = encryptBallotSelection(selectionState, election)
+            console.log("Success encrypting ballot:")
+            console.log(auditableBallot)
+            dispatch(setAuditableBallot(auditableBallot))
+            navigate(`/election/${election.id}/review`)
+        } catch (error) {
+            console.log("ERROR encrypting ballot:")
+            console.log(error)
+        }
+    }
 
     return (
         <ActionsContainer>
@@ -160,23 +181,26 @@ const ActionButtons: React.FC<ActionButtonProps> = ({}) => {
                     <Box>{t("votingScreen.backButton")}</Box>
                 </StyledButton>
             </StyledLink>
-            <StyledLink to="/review" sx={{margin: "auto 0", width: {xs: "100%", sm: "200px"}}}>
-                <StyledButton sx={{width: {xs: "100%", sm: "200px"}}}>
-                    <Box>{t("votingScreen.reviewButton")}</Box>
-                    <Icon icon={faAngleRight} size="sm" />
-                </StyledButton>
-            </StyledLink>
+            <StyledButton sx={{width: {xs: "100%", sm: "200px"}}} onClick={encryptAndReview}>
+                <Box>{t("votingScreen.reviewButton")}</Box>
+                <Icon icon={faAngleRight} size="sm" />
+            </StyledButton>
         </ActionsContainer>
     )
 }
 
 export const VotingScreen: React.FC = () => {
-    const election = useAppSelector(selectElectionById(SIMPLE_ELECTION.id))
+    const {electionId} = useParams<{electionId?: string}>()
+    const election = useAppSelector(selectElectionById(Number(electionId)))
+    const {t} = useTranslation()
     const dispatch = useAppDispatch()
+    const [openBallotHelp, setOpenBallotHelp] = useState(false)
 
     useEffect(() => {
-        dispatch(fetchElectionByIdAsync(SIMPLE_ELECTION.id))
-    }, [])
+        if (!isUndefined(electionId) && isUndefined(election)) {
+            dispatch(fetchElectionByIdAsync(Number(electionId)))
+        }
+    }, [electionId, election])
 
     if (!election) {
         return <Box>Loading</Box>
@@ -200,7 +224,17 @@ export const VotingScreen: React.FC = () => {
                     icon={faCircleQuestion}
                     sx={{fontSize: "unset", lineHeight: "unset", paddingBottom: "2px"}}
                     fontSize="16px"
+                    onClick={() => setOpenBallotHelp(true)}
                 />
+                <Dialog
+                    handleClose={() => setOpenBallotHelp(false)}
+                    open={openBallotHelp}
+                    title={t("votingScreen.ballotHelpDialog.title")}
+                    ok={t("votingScreen.ballotHelpDialog.ok")}
+                    variant="info"
+                >
+                    {stringToHtml(t("votingScreen.ballotHelpDialog.content"))}
+                </Dialog>
             </StyledTitle>
             {election.configuration.description ? (
                 <Typography variant="body2" sx={{color: theme.palette.customGrey.main}}>
@@ -215,7 +249,7 @@ export const VotingScreen: React.FC = () => {
                     key={index}
                 />
             ))}
-            <ActionButtons />
+            <ActionButtons election={election} />
         </PageLimit>
     )
 }

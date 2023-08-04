@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 import {Box, Typography} from "@mui/material"
-import React, {useState} from "react"
+import React, {useEffect, useState} from "react"
 import {useTranslation} from "react-i18next"
 import {
     PageLimit,
@@ -13,13 +13,17 @@ import {
     theme,
     QRCode,
     Dialog,
+    isUndefined,
 } from "ui-essentials"
 import {styled} from "@mui/material/styles"
 import {faPrint, faCircleQuestion, faCheck} from "@fortawesome/free-solid-svg-icons"
 import Button from "@mui/material/Button"
-import {Link as RouterLink} from "react-router-dom"
+import {Link as RouterLink, useParams} from "react-router-dom"
 import Link from "@mui/material/Link"
 import {SIMPLE_ELECTION} from "../fixtures/election"
+import {useAppDispatch, useAppSelector} from "../store/hooks"
+import {fetchElectionByIdAsync, selectElectionById} from "../store/elections/electionsSlice"
+import {selectAuditableBallot} from "../store/auditableBallots/auditableBallotsSlice"
 
 const StyledTitle = styled(Typography)`
     margin-top: 25.5px;
@@ -121,12 +125,21 @@ const ActionButtons: React.FC = ({}) => {
 }
 
 export const ConfirmationScreen: React.FC = () => {
+    const {electionId} = useParams<{electionId?: string}>()
+    const election = useAppSelector(selectElectionById(Number(electionId)))
+    const auditableBallot = useAppSelector(selectAuditableBallot(Number(electionId)))
+    const ballotId = auditableBallot?.ballot_hash || ""
     const {t} = useTranslation()
+    const dispatch = useAppDispatch()
     const [openBallotIdHelp, setOpenBallotIdHelp] = useState(false)
     const [openConfirmationHelp, setOpenConfirmationHelp] = useState(false)
-    const ballotId = "eee6fe54bc8a5f3fce2d2b8aa1909259ceaf7df3266302b7ce1a65ad85a53a92"
-    const electionId = SIMPLE_ELECTION.id
     const ballotTrackerUrl = `${window.location.protocol}//${window.location.host}/election/${electionId}/public/ballot-locator/${ballotId}`
+
+    useEffect(() => {
+        if (!isUndefined(electionId) && isUndefined(election)) {
+            dispatch(fetchElectionByIdAsync(Number(electionId)))
+        }
+    }, [electionId, election])
 
     return (
         <PageLimit maxWidth="lg">

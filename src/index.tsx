@@ -12,8 +12,11 @@ import "./services/i18n"
 import reportWebVitals from "./reportWebVitals"
 import {ThemeProvider} from "@mui/material"
 import {theme} from "ui-essentials"
+import SequentCoreLibInit, {set_hooks} from "sequent-core"
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement)
+
+SequentCoreLibInit().then(set_hooks)
 
 root.render(
     <React.StrictMode>

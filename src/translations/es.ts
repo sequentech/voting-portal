@@ -14,6 +14,12 @@ const spanishTranslation: TranslationType = {
         votingScreen: {
             backButton: "Back",
             reviewButton: "Next",
+            ballotHelpDialog: {
+                title: "Información: Pantalla de votación",
+                content:
+                    "Esta pantalla muestra la votación en la que usted es elegible para votar. Puede seleccionar su sección activando la casilla de la derecha Candidato/Respuesta. Para restablecer sus selecciones, haga clic en el botón “<b>Borrar selección</b>”, para pasar al siguiente paso, haga clic en el botón “<b>Siguiente</b>”.",
+                ok: "OK",
+            },
         },
         startScreen: {
             startButton: "Empezar a votar",
