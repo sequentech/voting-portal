@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 import {
     IAuditableBallot,
+    IHashableBallot,
     IElectionDTO,
     hash_cyphertext_js,
     encrypt_decoded_question_js,
@@ -10,16 +11,25 @@ import {
 import {BallotSelection} from "../store/ballotSelections/ballotSelectionsSlice"
 
 export interface IBallotService {
-    hashBallot512: (auditableBallot: IAuditableBallot) => string
+    hashBallot256: (auditableBallot: IAuditableBallot) => string
     encryptBallotSelection: (
         ballotSelection: BallotSelection,
         election: IElectionDTO
     ) => IAuditableBallot
 }
 
-export const hashBallot512 = (auditableBallot: IAuditableBallot): string => {
+export const toHashableBallot = (auditableBallot: IAuditableBallot): IHashableBallot => ({
+    choices: auditableBallot.choices.map(choice => ({
+        alpha: choice.alpha,
+        beta: choice.beta,
+    })),
+    issue_date: auditableBallot.issue_date,
+    proofs: auditableBallot.proofs,
+})
+
+export const hashBallot256 = (auditableBallot: IAuditableBallot): string => {
     try {
-        return hash_cyphertext_js(auditableBallot.choices)
+        return hash_cyphertext_js(toHashableBallot(auditableBallot))
     } catch (e) {
         console.log(e)
         throw e
@@ -39,6 +49,6 @@ export const encryptBallotSelection = (
 }
 
 export const provideBallotService = (): IBallotService => ({
-    hashBallot512,
+    hashBallot256,
     encryptBallotSelection,
 })
