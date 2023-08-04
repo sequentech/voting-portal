@@ -59,6 +59,23 @@ const createCategories = (question: IQuestion): [Array<IAnswer>, CategoriesMap] 
     return [nonCategoryCandidates, categoriesMap]
 }
 
+const getCheckableOptions = (
+    question: IQuestion
+): {checkableLists: boolean; checkableCandidates: boolean} => {
+    const enableCheckableLists = question.extra_options?.enable_checkable_lists || "disabled"
+    switch (enableCheckableLists) {
+        case "allow-selecting-candidates-and-lists":
+            return {checkableLists: true, checkableCandidates: true}
+        case "allow-selecting-candidates":
+            return {checkableLists: false, checkableCandidates: true}
+            break
+        case "allow-selecting-lists":
+            return {checkableLists: true, checkableCandidates: false}
+        default:
+            return {checkableLists: false, checkableCandidates: false}
+    }
+}
+
 export interface IQuestionProps {
     election: IElectionDTO
     question: IQuestion
@@ -67,6 +84,7 @@ export interface IQuestionProps {
 
 export const Question: React.FC<IQuestionProps> = ({election, question, questionIndex}) => {
     const [nonCategoryCandidates, categoriesMap] = createCategories(question)
+    const {checkableLists, checkableCandidates} = getCheckableOptions(question)
 
     return (
         <Box>
@@ -78,7 +96,12 @@ export const Question: React.FC<IQuestionProps> = ({election, question, question
             ) : null}
             <CandidatesWrapper>
                 {Object.entries(categoriesMap).map(([categoryName, category], categoryIndex) => (
-                    <CandidatesList title={categoryName} isActive={true} key={categoryIndex}>
+                    <CandidatesList
+                        title={categoryName}
+                        isActive={true}
+                        key={categoryIndex}
+                        isCheckable={checkableLists}
+                    >
                         {category.candidates.map((candidate, candidateIndex) => (
                             <Answer
                                 election={election}
@@ -86,6 +109,7 @@ export const Question: React.FC<IQuestionProps> = ({election, question, question
                                 questionIndex={questionIndex}
                                 key={candidateIndex}
                                 hasCategory={true}
+                                isActive={checkableCandidates}
                             />
                         ))}
                     </CandidatesList>
@@ -96,6 +120,7 @@ export const Question: React.FC<IQuestionProps> = ({election, question, question
                         answer={answer}
                         questionIndex={questionIndex}
                         key={answerIndex}
+                        isActive={true}
                     />
                 ))}
             </CandidatesWrapper>

@@ -16,9 +16,16 @@ export interface IAnswerProps {
     questionIndex: number
     election: IElectionDTO
     hasCategory?: boolean
+    isActive: boolean
 }
 
-export const Answer: React.FC<IAnswerProps> = ({answer, questionIndex, election, hasCategory}) => {
+export const Answer: React.FC<IAnswerProps> = ({
+    answer,
+    questionIndex,
+    election,
+    hasCategory,
+    isActive,
+}) => {
     const selectionState = useAppSelector(
         selectBallotSelectionVoteChoice(election.id, questionIndex, answer.id)
     )
@@ -43,7 +50,7 @@ export const Answer: React.FC<IAnswerProps> = ({answer, questionIndex, election,
         <Candidate
             title={answer.text}
             description={stringToHtml(answer.details)}
-            isActive={true}
+            isActive={isActive}
             checked={isChecked()}
             setChecked={setChecked}
             url={infoUrl}
