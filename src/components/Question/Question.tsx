@@ -3,12 +3,19 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 import React from "react"
 import {Box} from "@mui/material"
-import {theme, stringToHtml} from "ui-essentials"
+import {theme, stringToHtml, shuffle} from "ui-essentials"
 import {styled} from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
-import {IAnswer, IElectionDTO, IQuestion} from "sequent-core"
+import {IElectionDTO, IQuestion} from "sequent-core"
 import {Answer} from "../Answer/Answer"
-import {AnswersList, ICategory} from "../AnswersList/AnswersList"
+import {AnswersList} from "../AnswersList/AnswersList"
+import {
+    checkShuffleAllOptions,
+    checkShuffleCategories,
+    checkShuffleCategoryList,
+    getCheckableOptions,
+} from "../../services/ElectionConfigService"
+import {createCategories, getShuffledCategories} from "../../services/CategoryService"
 
 const StyledTitle = styled(Typography)`
     margin-top: 25.5px;
@@ -24,54 +31,6 @@ const CandidatesWrapper = styled(Box)`
     margin: 12px 0;
 `
 
-type CategoriesMap = {[category: string]: ICategory}
-
-const createCategories = (question: IQuestion): [Array<IAnswer>, CategoriesMap] => {
-    const nonCategoryCandidates: Array<IAnswer> = []
-
-    const categoriesMap: CategoriesMap = {}
-    for (let answer of question.answers) {
-        let category = answer.category
-        if (!category) {
-            nonCategoryCandidates.push(answer)
-            continue
-        }
-        if (!categoriesMap[category]) {
-            // initialize category
-            categoriesMap[category] = {
-                candidates: [],
-            }
-        }
-        const isCategoryHeader = answer.urls.some(
-            (url) => "isCategoryList" === url.title && "true" === url.url
-        )
-        if (isCategoryHeader) {
-            categoriesMap[category].header = answer
-        } else {
-            categoriesMap[category].candidates.push(answer)
-        }
-    }
-
-    return [nonCategoryCandidates, categoriesMap]
-}
-
-const getCheckableOptions = (
-    question: IQuestion
-): {checkableLists: boolean; checkableCandidates: boolean} => {
-    const enableCheckableLists = question.extra_options?.enable_checkable_lists || "disabled"
-    switch (enableCheckableLists) {
-        case "allow-selecting-candidates-and-lists":
-            return {checkableLists: true, checkableCandidates: true}
-        case "allow-selecting-candidates":
-            return {checkableLists: false, checkableCandidates: true}
-            break
-        case "allow-selecting-lists":
-            return {checkableLists: true, checkableCandidates: false}
-        default:
-            return {checkableLists: false, checkableCandidates: false}
-    }
-}
-
 export interface IQuestionProps {
     election: IElectionDTO
     question: IQuestion
@@ -85,8 +44,23 @@ export const Question: React.FC<IQuestionProps> = ({
     questionIndex,
     isReview,
 }) => {
-    const [nonCategoryCandidates, categoriesMap] = createCategories(question)
+    let [nonCategoryCandidates, categoriesMap] = createCategories(question)
     const {checkableLists, checkableCandidates} = getCheckableOptions(question)
+
+    // do the shuffling
+    const shuffleAllOptions = checkShuffleAllOptions(question)
+    const shuffleCategories = checkShuffleCategories(question)
+    const shuffleCategoryList = checkShuffleCategoryList(question)
+    categoriesMap = getShuffledCategories(
+        categoriesMap,
+        shuffleAllOptions,
+        shuffleCategories,
+        shuffleCategoryList
+    )
+
+    if (shuffleAllOptions) {
+        nonCategoryCandidates = shuffle(nonCategoryCandidates)
+    }
 
     return (
         <Box>

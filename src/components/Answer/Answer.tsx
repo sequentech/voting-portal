@@ -10,6 +10,12 @@ import {
     selectBallotSelectionVoteChoice,
     setBallotSelectionVoteChoice,
 } from "../../store/ballotSelections/ballotSelectionsSlice"
+import {
+    checkAllowWriteIns,
+    checkIsWriteIn,
+    getImageUrl,
+    getLinkUrl,
+} from "../../services/ElectionConfigService"
 
 export interface IAnswerProps {
     answer: IAnswer
@@ -31,13 +37,16 @@ export const Answer: React.FC<IAnswerProps> = ({
     const selectionState = useAppSelector(
         selectBallotSelectionVoteChoice(election.id, questionIndex, answer.id)
     )
+    const question = election.configuration.questions[questionIndex]
     const dispatch = useAppDispatch()
-    const imageUrl = answer.urls.find((url) => "Image URL" === url.title)?.url
-    const infoUrl = answer.urls.find((url) => "URL" === url.title)?.url
+    const imageUrl = getImageUrl(answer)
+    const infoUrl = getLinkUrl(answer)
 
     const isChecked = () => !isUndefined(selectionState) && selectionState.selected > -1
-    const setChecked = (value: boolean) =>
-        isActive &&
+    const setChecked = (value: boolean) => {
+        if (!isActive || isReview) {
+            return
+        }
         dispatch(
             setBallotSelectionVoteChoice({
                 election,
@@ -45,9 +54,31 @@ export const Answer: React.FC<IAnswerProps> = ({
                 voteChoice: {
                     id: answer.id,
                     selected: value ? 0 : -1,
+                    writein_text: selectionState?.writein_text,
                 },
             })
         )
+    }
+
+    const isWriteIn = checkIsWriteIn(answer)
+    const allowWriteIns = checkAllowWriteIns(question)
+
+    const setWriteInText = (writeInText: string): void => {
+        if (!isWriteIn || !allowWriteIns || !isActive || isReview) {
+            return
+        }
+        dispatch(
+            setBallotSelectionVoteChoice({
+                election,
+                questionIndex,
+                voteChoice: {
+                    id: answer.id,
+                    selected: isUndefined(selectionState) ? -1 : selectionState.selected,
+                    writein_text: writeInText,
+                },
+            })
+        )
+    }
 
     if (isReview && (isUndefined(selectionState) || selectionState.selected < 0)) {
         return null
@@ -62,6 +93,9 @@ export const Answer: React.FC<IAnswerProps> = ({
             setChecked={setChecked}
             url={infoUrl}
             hasCategory={hasCategory}
+            isWriteIn={allowWriteIns && isWriteIn}
+            writeInValue={selectionState?.writein_text}
+            setWriteInText={setWriteInText}
         >
             {imageUrl ? <Image src={imageUrl} duration={100} /> : null}
         </Candidate>
