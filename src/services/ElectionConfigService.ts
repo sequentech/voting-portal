@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Félix Robles <felix@sequentech.io>
 //
 // SPDX-License-Identifier: AGPL-3.0-only
+import {isUndefined} from "ui-essentials"
 import {IAnswer, IQuestion} from "sequent-core"
 
 export const findUrlByTitle = (answer: IAnswer, urlTitle: string): string | undefined =>
@@ -16,6 +17,15 @@ export const checkIsWriteIn = (answer: IAnswer): boolean =>
 
 export const checkAllowWriteIns = (question: IQuestion): boolean =>
     !!question.extra_options?.allow_writeins
+
+export const checkShuffleCategories = (question: IQuestion): boolean =>
+    !!question.extra_options?.shuffle_categories
+
+export const checkShuffleAllOptions = (question: IQuestion): boolean =>
+    !!question.extra_options?.shuffle_all_options
+
+export const checkShuffleCategoryList = (question: IQuestion): Array<string> =>
+    question.extra_options!.shuffle_category_list || []
 
 export const getCheckableOptions = (
     question: IQuestion

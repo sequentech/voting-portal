@@ -43,8 +43,10 @@ export const Answer: React.FC<IAnswerProps> = ({
     const infoUrl = getLinkUrl(answer)
 
     const isChecked = () => !isUndefined(selectionState) && selectionState.selected > -1
-    const setChecked = (value: boolean) =>
-        isActive &&
+    const setChecked = (value: boolean) => {
+        if (!isActive || isReview) {
+            return
+        }
         dispatch(
             setBallotSelectionVoteChoice({
                 election,
@@ -52,11 +54,31 @@ export const Answer: React.FC<IAnswerProps> = ({
                 voteChoice: {
                     id: answer.id,
                     selected: value ? 0 : -1,
+                    writein_text: selectionState?.writein_text,
                 },
             })
         )
+    }
+
     const isWriteIn = checkIsWriteIn(answer)
     const allowWriteIns = checkAllowWriteIns(question)
+
+    const setWriteInText = (writeInText: string): void => {
+        if (!isWriteIn || !allowWriteIns || !isActive || isReview) {
+            return
+        }
+        dispatch(
+            setBallotSelectionVoteChoice({
+                election,
+                questionIndex,
+                voteChoice: {
+                    id: answer.id,
+                    selected: isUndefined(selectionState) ? -1 : selectionState.selected,
+                    writein_text: writeInText,
+                },
+            })
+        )
+    }
 
     if (isReview && (isUndefined(selectionState) || selectionState.selected < 0)) {
         return null
@@ -72,6 +94,8 @@ export const Answer: React.FC<IAnswerProps> = ({
             url={infoUrl}
             hasCategory={hasCategory}
             isWriteIn={allowWriteIns && isWriteIn}
+            writeInValue={selectionState?.writein_text}
+            setWriteInText={setWriteInText}
         >
             {imageUrl ? <Image src={imageUrl} duration={100} /> : null}
         </Candidate>
