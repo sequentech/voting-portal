@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 import React from "react"
 import {CandidatesList, isUndefined} from "ui-essentials"
-import {IAnswer, IDecodedVoteQuestion, IElectionDTO, IQuestion} from "sequent-core"
+import {IDecodedVoteQuestion, IElectionDTO} from "sequent-core"
 import {Answer} from "../Answer/Answer"
 import {useAppDispatch, useAppSelector} from "../../store/hooks"
 import {
@@ -11,11 +11,7 @@ import {
     selectBallotSelectionVoteChoice,
     setBallotSelectionVoteChoice,
 } from "../../store/ballotSelections/ballotSelectionsSlice"
-
-export interface ICategory {
-    header?: IAnswer
-    candidates: Array<IAnswer>
-}
+import {ICategory} from "../../services/CategoryService"
 
 export interface AnswersListProps {
     title: string

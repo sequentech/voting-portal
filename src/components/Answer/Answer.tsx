@@ -10,6 +10,7 @@ import {
     selectBallotSelectionVoteChoice,
     setBallotSelectionVoteChoice,
 } from "../../store/ballotSelections/ballotSelectionsSlice"
+import {getImageUrl, getLinkUrl} from "../../services/ElectionConfigService"
 
 export interface IAnswerProps {
     answer: IAnswer
@@ -32,8 +33,8 @@ export const Answer: React.FC<IAnswerProps> = ({
         selectBallotSelectionVoteChoice(election.id, questionIndex, answer.id)
     )
     const dispatch = useAppDispatch()
-    const imageUrl = answer.urls.find((url) => "Image URL" === url.title)?.url
-    const infoUrl = answer.urls.find((url) => "URL" === url.title)?.url
+    const imageUrl = getImageUrl(answer)
+    const infoUrl = getLinkUrl(answer)
 
     const isChecked = () => !isUndefined(selectionState) && selectionState.selected > -1
     const setChecked = (value: boolean) =>
