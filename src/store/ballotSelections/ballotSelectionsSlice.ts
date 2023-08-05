@@ -83,6 +83,10 @@ export const selectBallotSelectionVoteChoice =
             (choice) => answerIndex === choice.id
         )
 
+export const selectBallotSelectionQuestion =
+    (electionId: number, questionIndex: number) => (state: RootState) =>
+        state.ballotSelections[electionId]?.[questionIndex]
+
 export const selectBallotSelection = (electionId: number) => (state: RootState) =>
     state.ballotSelections[electionId]
 

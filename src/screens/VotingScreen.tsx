@@ -11,7 +11,6 @@ import {
     Icon,
     IconButton,
     theme,
-    Candidate,
     stringToHtml,
     isUndefined,
     Dialog,
@@ -19,19 +18,14 @@ import {
 import {styled} from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 import {faCircleQuestion, faAngleLeft, faAngleRight} from "@fortawesome/free-solid-svg-icons"
-import {IAnswer, IElectionDTO, IQuestion} from "sequent-core"
-import Image from "mui-image"
+import {IElectionDTO} from "sequent-core"
 import {useTranslation} from "react-i18next"
 import Button from "@mui/material/Button"
 import {Link as RouterLink, useNavigate, useParams} from "react-router-dom"
-import {
-    selectBallotSelectionVoteChoice,
-    setBallotSelectionVoteChoice,
-    selectBallotSelection,
-} from "../store/ballotSelections/ballotSelectionsSlice"
-import {SIMPLE_ELECTION} from "../fixtures/election"
+import {selectBallotSelection} from "../store/ballotSelections/ballotSelectionsSlice"
 import {provideBallotService} from "../services/BallotService"
 import {setAuditableBallot} from "../store/auditableBallots/auditableBallotsSlice"
+import {Question} from "../components/Question/Question"
 
 const StyledLink = styled(RouterLink)`
     margin: auto 0;
@@ -43,13 +37,6 @@ const StyledTitle = styled(Typography)`
     display: flex;
     flex-direction: row;
     gap: 16px;
-`
-
-const CandidatesWrapper = styled(Box)`
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin: 12px 0;
 `
 
 const ActionsContainer = styled(Box)`
@@ -74,77 +61,6 @@ const StyledButton = styled(Button)`
         padding: 5px;
     }
 `
-
-interface IAnswerProps {
-    answer: IAnswer
-    questionIndex: number
-    answerIndex: number
-    election: IElectionDTO
-}
-const Answer: React.FC<IAnswerProps> = ({answer, questionIndex, answerIndex, election}) => {
-    const selectionState = useAppSelector(
-        selectBallotSelectionVoteChoice(election.id, questionIndex, answerIndex)
-    )
-    const dispatch = useAppDispatch()
-    const imageUrl = answer.urls.find((url) => "Image URL" === url.title)?.url
-    const infoUrl = answer.urls.find((url) => "URL" === url.title)?.url
-
-    const isChecked = () => !isUndefined(selectionState) && selectionState.selected > -1
-    const setChecked = (value: boolean) =>
-        dispatch(
-            setBallotSelectionVoteChoice({
-                election,
-                questionIndex,
-                voteChoice: {
-                    id: answerIndex,
-                    selected: value ? 0 : -1,
-                },
-            })
-        )
-
-    return (
-        <Candidate
-            title={answer.text}
-            description={stringToHtml(answer.details)}
-            isActive={true}
-            checked={isChecked()}
-            setChecked={setChecked}
-            url={infoUrl}
-        >
-            {imageUrl ? <Image src={imageUrl} duration={100} /> : null}
-        </Candidate>
-    )
-}
-
-interface IQuestionProps {
-    election: IElectionDTO
-    question: IQuestion
-    questionIndex: number
-}
-
-const Question: React.FC<IQuestionProps> = ({election, question, questionIndex}) => {
-    return (
-        <Box>
-            <StyledTitle variant="h5">{question.title}</StyledTitle>
-            {question.description ? (
-                <Typography variant="body2" sx={{color: theme.palette.customGrey.main}}>
-                    {stringToHtml(question.description)}
-                </Typography>
-            ) : null}
-            <CandidatesWrapper>
-                {question.answers.map((answer, answerIndex) => (
-                    <Answer
-                        election={election}
-                        answer={answer}
-                        questionIndex={questionIndex}
-                        answerIndex={answerIndex}
-                        key={answerIndex}
-                    />
-                ))}
-            </CandidatesWrapper>
-        </Box>
-    )
-}
 
 interface ActionButtonProps {
     election: IElectionDTO
@@ -247,6 +163,7 @@ export const VotingScreen: React.FC = () => {
                     question={question}
                     questionIndex={index}
                     key={index}
+                    isReview={false}
                 />
             ))}
             <ActionButtons election={election} />

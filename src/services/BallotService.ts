@@ -19,7 +19,7 @@ export interface IBallotService {
 }
 
 export const toHashableBallot = (auditableBallot: IAuditableBallot): IHashableBallot => ({
-    choices: auditableBallot.choices.map(choice => ({
+    choices: auditableBallot.choices.map((choice) => ({
         alpha: choice.alpha,
         beta: choice.beta,
     })),
