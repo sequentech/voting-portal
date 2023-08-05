@@ -79,7 +79,7 @@ export const AnswersList: React.FC<AnswersListProps> = ({
     return (
         <CandidatesList
             title={title}
-            isActive={isActive}
+            isActive={!isReview && isActive}
             isCheckable={checkableLists}
             checked={isChecked()}
             setChecked={setChecked}
