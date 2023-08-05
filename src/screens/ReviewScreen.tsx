@@ -12,7 +12,6 @@ import {
     Icon,
     IconButton,
     theme,
-    Candidate,
     stringToHtml,
     BallotHash,
     isUndefined,
@@ -26,14 +25,13 @@ import {
     faAngleRight,
     faFire,
 } from "@fortawesome/free-solid-svg-icons"
-import {IAnswer, IElectionDTO, IQuestion} from "sequent-core"
-import Image from "mui-image"
+import {IElectionDTO} from "sequent-core"
 import {useTranslation} from "react-i18next"
 import Button from "@mui/material/Button"
 import {Link as RouterLink} from "react-router-dom"
-import {selectBallotSelectionVoteChoice} from "../store/ballotSelections/ballotSelectionsSlice"
-import {SIMPLE_ELECTION} from "../fixtures/election"
+
 import {selectAuditableBallot} from "../store/auditableBallots/auditableBallotsSlice"
+import {Question} from "../components/Question/Question"
 
 const StyledLink = styled(RouterLink)`
     margin: auto 0;
@@ -45,13 +43,6 @@ const StyledTitle = styled(Typography)`
     display: flex;
     flex-direction: row;
     gap: 16px;
-`
-
-const CandidatesWrapper = styled(Box)`
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin: 12px 0;
 `
 
 const ActionsContainer = styled(Box)`
@@ -74,62 +65,6 @@ const StyledButton = styled(Button)`
         padding: 5px;
     }
 `
-
-interface IAnswerProps {
-    answer: IAnswer
-    questionIndex: number
-    answerIndex: number
-    electionId: number
-}
-const Answer: React.FC<IAnswerProps> = ({answer, questionIndex, answerIndex, electionId}) => {
-    const selectionState = useAppSelector(
-        selectBallotSelectionVoteChoice(electionId, questionIndex, answerIndex)
-    )
-    const imageUrl = answer.urls.find((url) => "Image URL" === url.title)?.url
-    const infoUrl = answer.urls.find((url) => "URL" === url.title)?.url
-
-    if (isUndefined(selectionState) || selectionState.selected < 0) {
-        return null
-    }
-
-    return (
-        <Candidate
-            title={answer.text}
-            description={stringToHtml(answer.details)}
-            isActive={false}
-            url={infoUrl}
-        >
-            {imageUrl ? <Image src={imageUrl} duration={100} /> : null}
-        </Candidate>
-    )
-}
-
-interface IQuestionProps {
-    question: IQuestion
-    questionIndex: number
-    electionId: number
-}
-
-const Question: React.FC<IQuestionProps> = ({question, questionIndex, electionId}) => {
-    return (
-        <Box>
-            <StyledTitle variant="h5">
-                {String(questionIndex + 1) + ". " + question.title}
-            </StyledTitle>
-            <CandidatesWrapper>
-                {question.answers.map((answer, answerIndex) => (
-                    <Answer
-                        key={answerIndex}
-                        questionIndex={questionIndex}
-                        answerIndex={answerIndex}
-                        answer={answer}
-                        electionId={electionId}
-                    />
-                ))}
-            </CandidatesWrapper>
-        </Box>
-    )
-}
 
 interface ActionButtonProps {
     election: IElectionDTO
@@ -255,10 +190,11 @@ export const ReviewScreen: React.FC = () => {
             </Typography>
             {election.configuration.questions.map((question, index) => (
                 <Question
-                    electionId={election.id}
+                    election={election}
                     question={question}
                     key={index}
                     questionIndex={index}
+                    isReview={true}
                 />
             ))}
             <ActionButtons election={election} />

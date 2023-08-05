@@ -76,9 +76,15 @@ export interface IQuestionProps {
     election: IElectionDTO
     question: IQuestion
     questionIndex: number
+    isReview: boolean
 }
 
-export const Question: React.FC<IQuestionProps> = ({election, question, questionIndex}) => {
+export const Question: React.FC<IQuestionProps> = ({
+    election,
+    question,
+    questionIndex,
+    isReview,
+}) => {
     const [nonCategoryCandidates, categoriesMap] = createCategories(question)
     const {checkableLists, checkableCandidates} = getCheckableOptions(question)
 
@@ -101,6 +107,7 @@ export const Question: React.FC<IQuestionProps> = ({election, question, question
                         category={category}
                         election={election}
                         questionIndex={questionIndex}
+                        isReview={isReview}
                     />
                 ))}
                 {nonCategoryCandidates.map((answer, answerIndex) => (
@@ -109,7 +116,8 @@ export const Question: React.FC<IQuestionProps> = ({election, question, question
                         answer={answer}
                         questionIndex={questionIndex}
                         key={answerIndex}
-                        isActive={true}
+                        isActive={!isReview}
+                        isReview={isReview}
                     />
                 ))}
             </CandidatesWrapper>

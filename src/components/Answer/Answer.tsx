@@ -17,6 +17,7 @@ export interface IAnswerProps {
     election: IElectionDTO
     hasCategory?: boolean
     isActive: boolean
+    isReview: boolean
 }
 
 export const Answer: React.FC<IAnswerProps> = ({
@@ -25,6 +26,7 @@ export const Answer: React.FC<IAnswerProps> = ({
     election,
     hasCategory,
     isActive,
+    isReview,
 }) => {
     const selectionState = useAppSelector(
         selectBallotSelectionVoteChoice(election.id, questionIndex, answer.id)
@@ -35,6 +37,7 @@ export const Answer: React.FC<IAnswerProps> = ({
 
     const isChecked = () => !isUndefined(selectionState) && selectionState.selected > -1
     const setChecked = (value: boolean) =>
+        isActive &&
         dispatch(
             setBallotSelectionVoteChoice({
                 election,
@@ -45,6 +48,10 @@ export const Answer: React.FC<IAnswerProps> = ({
                 },
             })
         )
+
+    if (isReview && (isUndefined(selectionState) || selectionState.selected < 0)) {
+        return null
+    }
 
     return (
         <Candidate

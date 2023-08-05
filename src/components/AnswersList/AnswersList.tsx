@@ -2,14 +2,12 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 import React from "react"
-import {Box} from "@mui/material"
-import {theme, CandidatesList, stringToHtml, isUndefined} from "ui-essentials"
-import {styled} from "@mui/material/styles"
-import Typography from "@mui/material/Typography"
-import {IAnswer, IElectionDTO, IQuestion} from "sequent-core"
+import {CandidatesList, isUndefined} from "ui-essentials"
+import {IAnswer, IDecodedVoteQuestion, IElectionDTO, IQuestion} from "sequent-core"
 import {Answer} from "../Answer/Answer"
 import {useAppDispatch, useAppSelector} from "../../store/hooks"
 import {
+    selectBallotSelectionQuestion,
     selectBallotSelectionVoteChoice,
     setBallotSelectionVoteChoice,
 } from "../../store/ballotSelections/ballotSelectionsSlice"
@@ -27,6 +25,22 @@ export interface AnswersListProps {
     category: ICategory
     election: IElectionDTO
     questionIndex: number
+    isReview: boolean
+}
+
+const showCategoryOnReview = (category: ICategory, questionState?: IDecodedVoteQuestion) => {
+    if (isUndefined(questionState)) {
+        return false
+    }
+    const answersFromCategory = category.candidates.map((candidate) => candidate.id)
+
+    if (!isUndefined(category.header)) {
+        answersFromCategory.push(category.header.id)
+    }
+
+    return questionState.choices.some(
+        (choice) => choice.selected > -1 && answersFromCategory.includes(choice.id)
+    )
 }
 
 export const AnswersList: React.FC<AnswersListProps> = ({
@@ -37,14 +51,17 @@ export const AnswersList: React.FC<AnswersListProps> = ({
     category,
     election,
     questionIndex,
+    isReview,
 }) => {
     const categoryAnswerId = category.header?.id || -1
     const selectionState = useAppSelector(
         selectBallotSelectionVoteChoice(election.id, questionIndex, categoryAnswerId)
     )
+    const questionState = useAppSelector(selectBallotSelectionQuestion(election.id, questionIndex))
     const dispatch = useAppDispatch()
     const isChecked = () => !isUndefined(selectionState) && selectionState.selected > -1
     const setChecked = (value: boolean) =>
+        isActive &&
         dispatch(
             setBallotSelectionVoteChoice({
                 election,
@@ -55,6 +72,9 @@ export const AnswersList: React.FC<AnswersListProps> = ({
                 },
             })
         )
+    if (isReview && !showCategoryOnReview(category, questionState)) {
+        return null
+    }
 
     return (
         <CandidatesList
@@ -71,7 +91,8 @@ export const AnswersList: React.FC<AnswersListProps> = ({
                     questionIndex={questionIndex}
                     key={candidateIndex}
                     hasCategory={true}
-                    isActive={checkableCandidates}
+                    isActive={!isReview && checkableCandidates}
+                    isReview={isReview}
                 />
             ))}
         </CandidatesList>

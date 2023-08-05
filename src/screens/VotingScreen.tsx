@@ -163,6 +163,7 @@ export const VotingScreen: React.FC = () => {
                     question={question}
                     questionIndex={index}
                     key={index}
+                    isReview={false}
                 />
             ))}
             <ActionButtons election={election} />
