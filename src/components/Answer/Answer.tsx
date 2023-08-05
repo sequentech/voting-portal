@@ -10,7 +10,12 @@ import {
     selectBallotSelectionVoteChoice,
     setBallotSelectionVoteChoice,
 } from "../../store/ballotSelections/ballotSelectionsSlice"
-import {getImageUrl, getLinkUrl} from "../../services/ElectionConfigService"
+import {
+    checkAllowWriteIns,
+    checkIsWriteIn,
+    getImageUrl,
+    getLinkUrl,
+} from "../../services/ElectionConfigService"
 
 export interface IAnswerProps {
     answer: IAnswer
@@ -32,6 +37,7 @@ export const Answer: React.FC<IAnswerProps> = ({
     const selectionState = useAppSelector(
         selectBallotSelectionVoteChoice(election.id, questionIndex, answer.id)
     )
+    const question = election.configuration.questions[questionIndex]
     const dispatch = useAppDispatch()
     const imageUrl = getImageUrl(answer)
     const infoUrl = getLinkUrl(answer)
@@ -49,6 +55,8 @@ export const Answer: React.FC<IAnswerProps> = ({
                 },
             })
         )
+    const isWriteIn = checkIsWriteIn(answer)
+    const allowWriteIns = checkAllowWriteIns(question)
 
     if (isReview && (isUndefined(selectionState) || selectionState.selected < 0)) {
         return null
@@ -63,6 +71,7 @@ export const Answer: React.FC<IAnswerProps> = ({
             setChecked={setChecked}
             url={infoUrl}
             hasCategory={hasCategory}
+            isWriteIn={allowWriteIns && isWriteIn}
         >
             {imageUrl ? <Image src={imageUrl} duration={100} /> : null}
         </Candidate>

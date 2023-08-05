@@ -11,6 +11,12 @@ export const getImageUrl = (answer: IAnswer): string | undefined =>
 
 export const getLinkUrl = (answer: IAnswer): string | undefined => findUrlByTitle(answer, "URL")
 
+export const checkIsWriteIn = (answer: IAnswer): boolean =>
+    "true" === findUrlByTitle(answer, "isWriteIn")
+
+export const checkAllowWriteIns = (question: IQuestion): boolean =>
+    !!question.extra_options?.allow_writeins
+
 export const getCheckableOptions = (
     question: IQuestion
 ): {checkableLists: boolean; checkableCandidates: boolean} => {
