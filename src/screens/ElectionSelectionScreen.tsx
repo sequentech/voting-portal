@@ -18,7 +18,7 @@ import {styled} from "@mui/material/styles"
 import {useAppDispatch, useAppSelector} from "../store/hooks"
 import {fetchElectionByIdAsync, selectElectionById} from "../store/elections/electionsSlice"
 import {ELECTIONS_LIST} from "../fixtures/election"
-import { useNavigate } from "react-router-dom"
+import {useNavigate} from "react-router-dom"
 
 const StyledTitle = styled(Typography)`
     margin-top: 25.5px;
@@ -55,6 +55,18 @@ const ElectionWrapper: React.FC<ElectionWrapperProps> = ({electionId}) => {
         navigate(`/election/${electionId}/start`)
     }
 
+    const formatDate = (dateStr: string): string => {
+        let date = new Date(dateStr)
+        let dateFormat = new Intl.DateTimeFormat("en", {
+            hour12: false,
+            day: "numeric",
+            month: "short",
+            hour: "numeric",
+            minute: "2-digit",
+        })
+        return dateFormat.format(date)
+    }
+
     if (!election) {
         return null
     }
@@ -65,8 +77,8 @@ const ElectionWrapper: React.FC<ElectionWrapperProps> = ({electionId}) => {
             title={election.configuration.title}
             electionHomeUrl={"https://sequentech.io"}
             hasVoted={electionId === ELECTIONS_LIST[0].id}
-            openDate={""}
-            closeDate={""}
+            openDate={election.startDate && formatDate(election.startDate)}
+            closeDate={election.endDate && formatDate(election.endDate)}
             onClickToVote={onClickToVote}
             onClickElectionResults={() => undefined}
         />
