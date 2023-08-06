@@ -104,7 +104,7 @@ export const Answer: React.FC<IAnswerProps> = ({
         )
     }
 
-    if (isReview && (isUndefined(selectionState) || selectionState.selected < 0)) {
+    if (isReview && !isChecked()) {
         return null
     }
 
