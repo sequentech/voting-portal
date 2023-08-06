@@ -5,6 +5,7 @@ import {createSlice, PayloadAction} from "@reduxjs/toolkit"
 import {RootState} from "../store"
 import {IElectionDTO, IDecodedVoteQuestion, IDecodedVoteChoice} from "sequent-core"
 import {isUndefined} from "ui-essentials"
+import {fetchElectionByIdAsync} from "../elections/electionsSlice"
 
 export type BallotSelection = Array<IDecodedVoteQuestion>
 
@@ -18,6 +19,28 @@ export const ballotSelectionsSlice = createSlice({
     name: "ballotSelections",
     initialState,
     reducers: {
+        resetBallotSelection: (
+            state,
+            action: PayloadAction<{
+                election: IElectionDTO
+                force?: boolean
+            }>
+        ): BallotSelectionsState => {
+            let currentElection = state[action.payload.election.id]
+            if (!currentElection || action.payload.force) {
+                state[action.payload.election.id] =
+                    action.payload.election.configuration.questions.map((question) => ({
+                        is_explicit_invalid: false,
+                        invalid_errors: [],
+                        choices: question.answers.map((answer) => ({
+                            id: answer.id,
+                            selected: -1,
+                        })),
+                    }))
+            }
+
+            return state
+        },
         setBallotSelectionInvalidVote: (
             state,
             action: PayloadAction<{
@@ -73,15 +96,7 @@ export const ballotSelectionsSlice = createSlice({
 
             // check election state
             if (!currentElection || isUndefined(currentChoice)) {
-                state[action.payload.election.id] =
-                    action.payload.election.configuration.questions.map((question) => ({
-                        is_explicit_invalid: false,
-                        invalid_errors: [],
-                        choices: question.answers.map((answer) => ({
-                            id: answer.id,
-                            selected: -1,
-                        })),
-                    }))
+                return state
             }
 
             // modify
@@ -97,9 +112,23 @@ export const ballotSelectionsSlice = createSlice({
             return state
         },
     },
+    extraReducers: (builder) => {
+        builder.addCase(fetchElectionByIdAsync.fulfilled, (state, action) => {
+            if (!action.payload) {
+                return state
+            }
+            ballotSelectionsSlice.caseReducers.resetBallotSelection(state, {
+                payload: {
+                    election: action.payload,
+                },
+                type: "ballotSelections/resetBallotSelection",
+            })
+            return state
+        })
+    },
 })
 
-export const {setBallotSelectionInvalidVote, setBallotSelectionVoteChoice} =
+export const {resetBallotSelection, setBallotSelectionInvalidVote, setBallotSelectionVoteChoice} =
     ballotSelectionsSlice.actions
 
 export const selectBallotSelectionVoteChoice =

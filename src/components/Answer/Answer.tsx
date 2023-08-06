@@ -7,6 +7,7 @@ import {Candidate, stringToHtml, isUndefined} from "ui-essentials"
 import {IAnswer, IElectionDTO} from "sequent-core"
 import Image from "mui-image"
 import {
+    selectBallotSelectionQuestion,
     selectBallotSelectionVoteChoice,
     setBallotSelectionInvalidVote,
     setBallotSelectionVoteChoice,
@@ -40,12 +41,19 @@ export const Answer: React.FC<IAnswerProps> = ({
     const selectionState = useAppSelector(
         selectBallotSelectionVoteChoice(election.id, questionIndex, answer.id)
     )
+    const questionState = useAppSelector(selectBallotSelectionQuestion(election.id, questionIndex))
     const question = election.configuration.questions[questionIndex]
     const dispatch = useAppDispatch()
     const imageUrl = getImageUrl(answer)
     const infoUrl = getLinkUrl(answer)
 
-    const isChecked = () => !isUndefined(selectionState) && selectionState.selected > -1
+    const isChecked = (): boolean => {
+        if (!isInvalidVote) {
+            return !isUndefined(selectionState) && selectionState.selected > -1
+        } else {
+            return !isUndefined(questionState) && questionState.is_explicit_invalid
+        }
+    }
     const setInvalidVote = (value: boolean) => {
         dispatch(
             setBallotSelectionInvalidVote({

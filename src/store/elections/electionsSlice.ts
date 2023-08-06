@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit"
-import {RootState, AppThunk} from "../store"
+import {RootState} from "../store"
 import {fetchElection} from "./electionsAPI"
 import {IElectionDTO} from "sequent-core"
 
