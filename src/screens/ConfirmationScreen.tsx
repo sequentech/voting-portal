@@ -18,9 +18,8 @@ import {
 import {styled} from "@mui/material/styles"
 import {faPrint, faCircleQuestion, faCheck} from "@fortawesome/free-solid-svg-icons"
 import Button from "@mui/material/Button"
-import {Link as RouterLink, useParams} from "react-router-dom"
+import {useParams} from "react-router-dom"
 import Link from "@mui/material/Link"
-import {SIMPLE_ELECTION} from "../fixtures/election"
 import {useAppDispatch, useAppSelector} from "../store/hooks"
 import {fetchElectionByIdAsync, selectElectionById} from "../store/elections/electionsSlice"
 import {selectAuditableBallot} from "../store/auditableBallots/auditableBallotsSlice"
@@ -146,11 +145,12 @@ export const ConfirmationScreen: React.FC = () => {
             <Box marginTop="24px">
                 <BreadCrumbSteps
                     labels={[
+                        "breadcrumbSteps.electionList",
                         "breadcrumbSteps.ballot",
                         "breadcrumbSteps.review",
                         "breadcrumbSteps.confirmation",
                     ]}
-                    selected={2}
+                    selected={3}
                 />
             </Box>
             <StyledTitle variant="h4" fontSize="24px" fontWeight="bold" sx={{marginTop: "40px"}}>

@@ -27,7 +27,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons"
 import {Link as RouterLink, useParams} from "react-router-dom"
 import {Typography} from "@mui/material"
-import {SIMPLE_ELECTION} from "../fixtures/election"
 import {useAppDispatch, useAppSelector} from "../store/hooks"
 import {fetchElectionByIdAsync, selectElectionById} from "../store/elections/electionsSlice"
 import {selectAuditableBallot} from "../store/auditableBallots/auditableBallotsSlice"
@@ -153,12 +152,13 @@ export const AuditScreen: React.FC = () => {
                 </Dialog>
                 <BreadCrumbSteps
                     labels={[
+                        "breadcrumbSteps.electionList",
                         "breadcrumbSteps.ballot",
                         "breadcrumbSteps.review",
                         "breadcrumbSteps.confirmation",
                         "breadcrumbSteps.audit",
                     ]}
-                    selected={3}
+                    selected={4}
                     warning={true}
                 />
             </Box>

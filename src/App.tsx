@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Félix Robles <felix@sequentech.io>
 //
 // SPDX-License-Identifier: AGPL-3.0-only
-import React, {useState} from "react"
+import React from "react"
 import {Routes, Route} from "react-router-dom"
 import {styled} from "@mui/material/styles"
 import {Footer, Header, PageBanner} from "ui-essentials"
@@ -11,6 +11,7 @@ import {VotingScreen} from "./screens/VotingScreen"
 import {ReviewScreen} from "./screens/ReviewScreen"
 import {ConfirmationScreen} from "./screens/ConfirmationScreen"
 import {AuditScreen} from "./screens/AuditScreen"
+import {ElectionSelectionScreen} from "./screens/ElectionSelectionScreen"
 
 const StyledApp = styled(Stack)`
     min-height: 100vh;
@@ -22,7 +23,8 @@ const App = () => {
             <Header />
             <PageBanner marginBottom="auto">
                 <Routes>
-                    <Route path="/" element={<StartScreen />} />
+                    <Route path="/" element={<ElectionSelectionScreen />} />
+                    <Route path="/election/:electionId/start" element={<StartScreen />} />
                     <Route path="/election/:electionId/vote" element={<VotingScreen />} />
                     <Route path="/election/:electionId/review" element={<ReviewScreen />} />
                     <Route

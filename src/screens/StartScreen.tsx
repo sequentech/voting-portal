@@ -4,13 +4,12 @@
 import {Box, Typography} from "@mui/material"
 import React, {useEffect} from "react"
 import {useTranslation} from "react-i18next"
-import {BreadCrumbSteps, PageLimit, theme, stringToHtml} from "ui-essentials"
+import {BreadCrumbSteps, PageLimit, theme, stringToHtml, isUndefined} from "ui-essentials"
 import {styled} from "@mui/material/styles"
-import {Link as RouterLink} from "react-router-dom"
+import {Link as RouterLink, useParams} from "react-router-dom"
 import Button from "@mui/material/Button"
 import {useAppDispatch, useAppSelector} from "../store/hooks"
 import {fetchElectionByIdAsync, selectElectionById} from "../store/elections/electionsSlice"
-import {SIMPLE_ELECTION} from "../fixtures/election"
 import {IElectionDTO} from "sequent-core"
 
 const StyledTitle = styled(Typography)`
@@ -66,12 +65,15 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({election}) => {
 
 export const StartScreen: React.FC = () => {
     const {t} = useTranslation()
-    const election = useAppSelector(selectElectionById(SIMPLE_ELECTION.id))
+    const {electionId} = useParams<{electionId?: string}>()
+    const election = useAppSelector(selectElectionById(Number(electionId)))
     const dispatch = useAppDispatch()
 
     useEffect(() => {
-        dispatch(fetchElectionByIdAsync(SIMPLE_ELECTION.id))
-    }, [])
+        if (!isUndefined(electionId) && isUndefined(election)) {
+            dispatch(fetchElectionByIdAsync(Number(electionId)))
+        }
+    }, [electionId, election])
 
     if (!election) {
         return <Box>Loading</Box>
@@ -82,11 +84,12 @@ export const StartScreen: React.FC = () => {
             <Box marginTop="48px">
                 <BreadCrumbSteps
                     labels={[
+                        "breadcrumbSteps.electionList",
                         "breadcrumbSteps.ballot",
                         "breadcrumbSteps.review",
                         "breadcrumbSteps.confirmation",
                     ]}
-                    selected={0}
+                    selected={1}
                 />
             </Box>
             <StyledTitle variant="h3" justifyContent="center" fontWeight="bold">
