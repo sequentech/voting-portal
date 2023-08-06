@@ -18,6 +18,7 @@ import {styled} from "@mui/material/styles"
 import {useAppDispatch, useAppSelector} from "../store/hooks"
 import {fetchElectionByIdAsync, selectElectionById} from "../store/elections/electionsSlice"
 import {ELECTIONS_LIST} from "../fixtures/election"
+import { useNavigate } from "react-router-dom"
 
 const StyledTitle = styled(Typography)`
     margin-top: 25.5px;
@@ -44,10 +45,15 @@ interface ElectionWrapperProps {
 const ElectionWrapper: React.FC<ElectionWrapperProps> = ({electionId}) => {
     const election = useAppSelector(selectElectionById(electionId))
     const dispatch = useAppDispatch()
+    const navigate = useNavigate()
 
     useEffect(() => {
         dispatch(fetchElectionByIdAsync(electionId))
     }, [])
+
+    const onClickToVote = () => {
+        navigate(`/election/${electionId}/start`)
+    }
 
     if (!election) {
         return null
@@ -55,13 +61,13 @@ const ElectionWrapper: React.FC<ElectionWrapperProps> = ({electionId}) => {
     return (
         <SelectElection
             isActive={true}
-            isOpen={true}
+            isOpen={election.state === "started"}
             title={election.configuration.title}
-            electionHomeUrl={""}
-            hasVoted={false}
+            electionHomeUrl={"https://sequentech.io"}
+            hasVoted={electionId === ELECTIONS_LIST[0].id}
             openDate={""}
             closeDate={""}
-            onClickToVote={() => undefined}
+            onClickToVote={onClickToVote}
             onClickElectionResults={() => undefined}
         />
     )
