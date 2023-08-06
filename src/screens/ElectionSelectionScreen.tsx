@@ -50,7 +50,7 @@ const ElectionWrapper: React.FC<ElectionWrapperProps> = ({electionId}) => {
     }, [])
 
     if (!election) {
-        return <Box>Loading</Box>
+        return null
     }
     return (
         <SelectElection

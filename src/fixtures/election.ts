@@ -10,7 +10,7 @@ export const SIMPLE_ELECTION_PLURALITY: IElectionDTO = {
         layout: "simple",
         director: "6xx-a1",
         authorities: ["6xx-a2"],
-        title: "New election",
+        title: "Simple election plurality",
         description:
             'This is the description of the election. You can add simple html like <strong>bold</strong> or <a href="https://sequentech.io" rel="nofollow">links to websites</a>.\n\n<br /><br />You need to use two br element for new paragraphs.',
         questions: [
@@ -150,7 +150,7 @@ export const ELECTION_CATEGORIES: IElectionDTO = {
         layout: "simple",
         director: "6xx-a1",
         authorities: ["6xx-a2"],
-        title: "New election",
+        title: "Election gategories",
         description:
             'This is the description of the election. You can add simple html like <strong>bold</strong> or <a href="https://sequentech.io" rel="nofollow">links to websites</a>.\n\n<br /><br />You need to use two br element for new paragraphs.',
         questions: [
@@ -263,7 +263,7 @@ export const ELECTION_WRITEINS_SIMPLE: IElectionDTO = {
         layout: "simple",
         director: "6xx-a1",
         authorities: ["6xx-a2"],
-        title: "New election",
+        title: "Write-ins simple",
         description:
             'This is the description of the election. You can add simple html like <strong>bold</strong> or <a href="https://sequentech.io" rel="nofollow">links to websites</a>.\n\n<br /><br />You need to use two br element for new paragraphs.',
         questions: [
@@ -390,7 +390,7 @@ export const ELECTION_WITH_INVALID: IElectionDTO = {
         layout: "simple",
         director: "6xx-a1",
         authorities: ["6xx-a2"],
-        title: "New election",
+        title: "With Invalid Vote",
         description:
             'This is the description of the election. You can add simple html like <strong>bold</strong> or <a href="https://sequentech.io" rel="nofollow">links to websites</a>.\n\n<br /><br />You need to use two br element for new paragraphs.',
         questions: [
