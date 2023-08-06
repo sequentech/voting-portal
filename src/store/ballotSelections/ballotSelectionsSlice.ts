@@ -18,6 +18,30 @@ export const ballotSelectionsSlice = createSlice({
     name: "ballotSelections",
     initialState,
     reducers: {
+        setBallotSelectionInvalidVote: (
+            state,
+            action: PayloadAction<{
+                election: IElectionDTO
+                questionIndex: number
+                isExplicitInvalid: boolean
+            }>
+        ): BallotSelectionsState => {
+            // check bounds
+            if (
+                action.payload.questionIndex >=
+                action.payload.election.configuration.questions.length
+            ) {
+                return state
+            }
+            // find question
+            let currentElection = state[action.payload.election.id]
+            let currentQuestion = currentElection?.[action.payload.questionIndex]
+            // update state
+            if (!isUndefined(currentQuestion)) {
+                currentQuestion.is_explicit_invalid = action.payload.isExplicitInvalid
+            }
+            return state
+        },
         setBallotSelectionVoteChoice: (
             state,
             action: PayloadAction<{
@@ -75,7 +99,8 @@ export const ballotSelectionsSlice = createSlice({
     },
 })
 
-export const {setBallotSelectionVoteChoice} = ballotSelectionsSlice.actions
+export const {setBallotSelectionInvalidVote, setBallotSelectionVoteChoice} =
+    ballotSelectionsSlice.actions
 
 export const selectBallotSelectionVoteChoice =
     (electionId: number, questionIndex: number, answerIndex: number) => (state: RootState) =>

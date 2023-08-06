@@ -8,6 +8,7 @@ import {IAnswer, IElectionDTO} from "sequent-core"
 import Image from "mui-image"
 import {
     selectBallotSelectionVoteChoice,
+    setBallotSelectionInvalidVote,
     setBallotSelectionVoteChoice,
 } from "../../store/ballotSelections/ballotSelectionsSlice"
 import {
@@ -24,6 +25,7 @@ export interface IAnswerProps {
     hasCategory?: boolean
     isActive: boolean
     isReview: boolean
+    isInvalidVote?: boolean
 }
 
 export const Answer: React.FC<IAnswerProps> = ({
@@ -33,6 +35,7 @@ export const Answer: React.FC<IAnswerProps> = ({
     hasCategory,
     isActive,
     isReview,
+    isInvalidVote,
 }) => {
     const selectionState = useAppSelector(
         selectBallotSelectionVoteChoice(election.id, questionIndex, answer.id)
@@ -43,8 +46,21 @@ export const Answer: React.FC<IAnswerProps> = ({
     const infoUrl = getLinkUrl(answer)
 
     const isChecked = () => !isUndefined(selectionState) && selectionState.selected > -1
+    const setInvalidVote = (value: boolean) => {
+        dispatch(
+            setBallotSelectionInvalidVote({
+                election,
+                questionIndex,
+                isExplicitInvalid: value,
+            })
+        )
+    }
     const setChecked = (value: boolean) => {
         if (!isActive || isReview) {
+            return
+        }
+        if (isInvalidVote) {
+            setInvalidVote(value)
             return
         }
         dispatch(
@@ -96,6 +112,7 @@ export const Answer: React.FC<IAnswerProps> = ({
             isWriteIn={allowWriteIns && isWriteIn}
             writeInValue={selectionState?.writein_text}
             setWriteInText={setWriteInText}
+            isInvalidVote={isInvalidVote}
         >
             {imageUrl ? <Image src={imageUrl} duration={100} /> : null}
         </Candidate>
