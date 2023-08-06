@@ -170,11 +170,12 @@ export const ReviewScreen: React.FC = () => {
             <Box marginTop="48px">
                 <BreadCrumbSteps
                     labels={[
+                        "breadcrumbSteps.electionList",
                         "breadcrumbSteps.ballot",
                         "breadcrumbSteps.review",
                         "breadcrumbSteps.confirmation",
                     ]}
-                    selected={1}
+                    selected={2}
                 />
             </Box>
             <StyledTitle variant="h4" fontSize="24px" fontWeight="bold" sx={{margin: 0}}>

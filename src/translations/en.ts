@@ -4,6 +4,7 @@
 const englishTranslation = {
     translations: {
         breadcrumbSteps: {
+            electionList: "Election List",
             ballot: "Ballot",
             review: "Review",
             confirmation: "Confirmation",
@@ -104,6 +105,16 @@ const englishTranslation = {
             },
             bottomWarning:
                 "For security reason, when you audit your ballot, it need to be spoiled. To continue with the voting process, you need to click ‘<b>Start Voting</b>’ bellow.",
+        },
+        electionSelectionScreen: {
+            title: "Election list",
+            description: "Select the election you want to vote",
+            chooserHelpDialog: {
+                title: "Information: Election List",
+                content:
+                    'Welcome to the Voting Booth, this screen shows the list of elections you can cast a ballot. Elections displayed in this list can be open to voting, scheduled, or closed. You will be able to access the ballot only if the voting period is open. In the case an election is closed and your election administrator has published the result you will see an "Election Result" button that will take you to the public result page.',
+                ok: "OK",
+            },
         },
     },
 }

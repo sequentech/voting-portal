@@ -127,11 +127,12 @@ export const VotingScreen: React.FC = () => {
             <Box marginTop="48px">
                 <BreadCrumbSteps
                     labels={[
+                        "breadcrumbSteps.electionList",
                         "breadcrumbSteps.ballot",
                         "breadcrumbSteps.review",
                         "breadcrumbSteps.confirmation",
                     ]}
-                    selected={0}
+                    selected={1}
                 />
             </Box>
             <StyledTitle variant="h4">

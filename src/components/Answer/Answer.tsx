@@ -7,7 +7,9 @@ import {Candidate, stringToHtml, isUndefined} from "ui-essentials"
 import {IAnswer, IElectionDTO} from "sequent-core"
 import Image from "mui-image"
 import {
+    selectBallotSelectionQuestion,
     selectBallotSelectionVoteChoice,
+    setBallotSelectionInvalidVote,
     setBallotSelectionVoteChoice,
 } from "../../store/ballotSelections/ballotSelectionsSlice"
 import {
@@ -24,6 +26,7 @@ export interface IAnswerProps {
     hasCategory?: boolean
     isActive: boolean
     isReview: boolean
+    isInvalidVote?: boolean
 }
 
 export const Answer: React.FC<IAnswerProps> = ({
@@ -33,18 +36,39 @@ export const Answer: React.FC<IAnswerProps> = ({
     hasCategory,
     isActive,
     isReview,
+    isInvalidVote,
 }) => {
     const selectionState = useAppSelector(
         selectBallotSelectionVoteChoice(election.id, questionIndex, answer.id)
     )
+    const questionState = useAppSelector(selectBallotSelectionQuestion(election.id, questionIndex))
     const question = election.configuration.questions[questionIndex]
     const dispatch = useAppDispatch()
     const imageUrl = getImageUrl(answer)
     const infoUrl = getLinkUrl(answer)
 
-    const isChecked = () => !isUndefined(selectionState) && selectionState.selected > -1
+    const isChecked = (): boolean => {
+        if (!isInvalidVote) {
+            return !isUndefined(selectionState) && selectionState.selected > -1
+        } else {
+            return !isUndefined(questionState) && questionState.is_explicit_invalid
+        }
+    }
+    const setInvalidVote = (value: boolean) => {
+        dispatch(
+            setBallotSelectionInvalidVote({
+                election,
+                questionIndex,
+                isExplicitInvalid: value,
+            })
+        )
+    }
     const setChecked = (value: boolean) => {
         if (!isActive || isReview) {
+            return
+        }
+        if (isInvalidVote) {
+            setInvalidVote(value)
             return
         }
         dispatch(
@@ -80,7 +104,7 @@ export const Answer: React.FC<IAnswerProps> = ({
         )
     }
 
-    if (isReview && (isUndefined(selectionState) || selectionState.selected < 0)) {
+    if (isReview && !isChecked()) {
         return null
     }
 
@@ -96,6 +120,7 @@ export const Answer: React.FC<IAnswerProps> = ({
             isWriteIn={allowWriteIns && isWriteIn}
             writeInValue={selectionState?.writein_text}
             setWriteInText={setWriteInText}
+            isInvalidVote={isInvalidVote}
         >
             {imageUrl ? <Image src={imageUrl} duration={100} /> : null}
         </Candidate>
