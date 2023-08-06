@@ -3,7 +3,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 import {IAnswer, IQuestion} from "sequent-core"
-import {shuffle} from "ui-essentials"
+import {shuffle, splitList} from "ui-essentials"
+import {checkIsInvalidVote} from "./ElectionConfigService"
 
 export interface ICategory {
     header?: IAnswer
@@ -12,11 +13,18 @@ export interface ICategory {
 
 export type CategoriesMap = {[category: string]: ICategory}
 
-export const createCategories = (question: IQuestion): [Array<IAnswer>, CategoriesMap] => {
+export interface ICategorizedCandidates {
+    invalidCandidates: Array<IAnswer>
+    noCategoryCandidates: Array<IAnswer>
+    categoriesMap: CategoriesMap
+}
+
+export const categorizeCandidates = (question: IQuestion): ICategorizedCandidates => {
+    const [validCandidates, invalidCandidates] = splitList(question.answers, checkIsInvalidVote)
     const nonCategoryCandidates: Array<IAnswer> = []
 
     const categoriesMap: CategoriesMap = {}
-    for (let answer of question.answers) {
+    for (let answer of validCandidates) {
         let category = answer.category
         if (!category) {
             nonCategoryCandidates.push(answer)
@@ -38,7 +46,11 @@ export const createCategories = (question: IQuestion): [Array<IAnswer>, Categori
         }
     }
 
-    return [nonCategoryCandidates, categoriesMap]
+    return {
+        invalidCandidates: invalidCandidates,
+        noCategoryCandidates: nonCategoryCandidates,
+        categoriesMap: categoriesMap,
+    }
 }
 
 export const getShuffledCategories = (

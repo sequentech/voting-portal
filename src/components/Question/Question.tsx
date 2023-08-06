@@ -3,19 +3,20 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 import React from "react"
 import {Box} from "@mui/material"
-import {theme, stringToHtml, shuffle} from "ui-essentials"
+import {theme, stringToHtml, shuffle, splitList} from "ui-essentials"
 import {styled} from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 import {IElectionDTO, IQuestion} from "sequent-core"
 import {Answer} from "../Answer/Answer"
 import {AnswersList} from "../AnswersList/AnswersList"
 import {
+    checkPositionIsTop,
     checkShuffleAllOptions,
     checkShuffleCategories,
     checkShuffleCategoryList,
     getCheckableOptions,
 } from "../../services/ElectionConfigService"
-import {createCategories, getShuffledCategories} from "../../services/CategoryService"
+import {categorizeCandidates, getShuffledCategories} from "../../services/CategoryService"
 
 const StyledTitle = styled(Typography)`
     margin-top: 25.5px;
@@ -44,8 +45,12 @@ export const Question: React.FC<IQuestionProps> = ({
     questionIndex,
     isReview,
 }) => {
-    let [nonCategoryCandidates, categoriesMap] = createCategories(question)
+    let {invalidCandidates, noCategoryCandidates, categoriesMap} = categorizeCandidates(question)
     const {checkableLists, checkableCandidates} = getCheckableOptions(question)
+    let [invalidBottomCandidates, invalidTopCandidates] = splitList(
+        invalidCandidates,
+        checkPositionIsTop
+    )
 
     // do the shuffling
     const shuffleAllOptions = checkShuffleAllOptions(question)
@@ -59,7 +64,7 @@ export const Question: React.FC<IQuestionProps> = ({
     )
 
     if (shuffleAllOptions) {
-        nonCategoryCandidates = shuffle(nonCategoryCandidates)
+        noCategoryCandidates = shuffle(noCategoryCandidates)
     }
 
     return (
@@ -71,6 +76,17 @@ export const Question: React.FC<IQuestionProps> = ({
                 </Typography>
             ) : null}
             <CandidatesWrapper>
+                {invalidTopCandidates.map((answer, answerIndex) => (
+                    <Answer
+                        election={election}
+                        answer={answer}
+                        questionIndex={questionIndex}
+                        key={answerIndex}
+                        isActive={!isReview}
+                        isReview={isReview}
+                        isInvalidVote={true}
+                    />
+                ))}
                 {Object.entries(categoriesMap).map(([categoryName, category], categoryIndex) => (
                     <AnswersList
                         key={categoryIndex}
@@ -84,7 +100,7 @@ export const Question: React.FC<IQuestionProps> = ({
                         isReview={isReview}
                     />
                 ))}
-                {nonCategoryCandidates.map((answer, answerIndex) => (
+                {noCategoryCandidates.map((answer, answerIndex) => (
                     <Answer
                         election={election}
                         answer={answer}
@@ -92,6 +108,17 @@ export const Question: React.FC<IQuestionProps> = ({
                         key={answerIndex}
                         isActive={!isReview}
                         isReview={isReview}
+                    />
+                ))}
+                {invalidBottomCandidates.map((answer, answerIndex) => (
+                    <Answer
+                        election={election}
+                        answer={answer}
+                        questionIndex={questionIndex}
+                        key={answerIndex}
+                        isActive={!isReview}
+                        isReview={isReview}
+                        isInvalidVote={true}
                     />
                 ))}
             </CandidatesWrapper>
